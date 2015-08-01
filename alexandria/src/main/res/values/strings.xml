@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Alexandria</string>
+    <string name="app_name" translatable="false">Alexandria</string>
+
+    <!-- Navigation drawer -->
+    <string name="navdrawer_header_title">Welcome to Alexandria!</string>
+    <string name="navdrawer_item_books">List of Books</string>
+    <string name="navdrawer_item_add_book">Scan/Add a Book</string>
+    <string name="navdrawer_item_settings">Settings</string>
+    <string name="navdrawer_item_about">About</string>
 
     <!-- Menu Items -->
-    <string name="books">List of Books</string>
-    <string name="scan">Scan/Add a Book</string>
-    <string name="about">About this App</string>
+    <string name="menu_item_books">List of Books</string>
+    <string name="menu_item_scan">Scan/Add a Book</string>
+    <string name="menu_item_about">About this App</string>
 
-    <string name="navigation_drawer_open" >Open navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="scan_button">Scan</string>
@@ -25,7 +32,8 @@
     <string name="back_button">go back</string>
     <string name="share_text">A must read book: </string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
     The original version of this app was built by Sascha Jaschke, and a modified version is given to students in the Udacity Android Nanodegree program. </string>
+    <string name="title_settings">Settings</string>
 </resources>
