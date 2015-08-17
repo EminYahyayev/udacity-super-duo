@@ -34,6 +34,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         return mToolbar;
     }
 
+    @Override
+    public void setTitle(int titleId) {
+        ActionBar ab = getSupportActionBar();
+        if (ab != null)
+            ab.setTitle(titleId);
+        else
+            super.setTitle(titleId);
+    }
+
     private void setupToolbar() {
         if (mToolbar == null) {
             Log.w(TAG, "Didn't find a toolbar");

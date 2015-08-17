@@ -4,22 +4,22 @@
 
         <item
             android:id="@+id/drawer_item_books"
-            android:icon="@drawable/ic_drawer_books"
+            android:icon="@drawable/ic_local_library_black_24dp"
             android:title="@string/navdrawer_item_books" />
 
         <item
             android:id="@+id/drawer_item_add_book"
-            android:icon="@drawable/ic_drawer_add_book"
+            android:icon="@drawable/ic_camera_alt_black_24dp"
             android:title="@string/navdrawer_item_add_book" />
 
         <item
             android:id="@+id/drawer_item_settings"
-            android:icon="@drawable/ic_drawer_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/navdrawer_item_settings" />
 
         <item
             android:id="@+id/drawer_item_about"
-            android:icon="@drawable/ic_drawer_about"
+            android:icon="@drawable/ic_info_black_24dp"
             android:title="@string/navdrawer_item_about" />
 
     </group>

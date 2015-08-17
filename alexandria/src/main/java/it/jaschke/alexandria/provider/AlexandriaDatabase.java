@@ -5,10 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/**
- * Created by saj on 22/12/14.
- */
-public class AlexandriaDatabase extends SQLiteOpenHelper {
+
+public final class AlexandriaDatabase extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "alexandria.db";

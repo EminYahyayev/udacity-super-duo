@@ -16,7 +16,7 @@ public final class PrefUtils {
          */
         String USER_LEARNED_DRAWER = "pref_navigation_drawer_learned";
 
-        String STARTING_FRAGMENT = "pref_starting_fragment";
+        String STARTING_DRAWER_ITEM = "pref_starting_fragment";
     }
 
     public static boolean isDrawerLearned(final Context context) {
@@ -29,14 +29,14 @@ public final class PrefUtils {
         sp.edit().putBoolean(Prefs.USER_LEARNED_DRAWER, true).apply();
     }
 
-    public static int getStartingFragment(final Context context) {
+    public static int getStartingDrawerItem(final Context context, int defaultItem) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getInt(Prefs.STARTING_FRAGMENT, 0);
+        return sp.getInt(Prefs.STARTING_DRAWER_ITEM, defaultItem);
     }
 
-    public static void setStartingFragment(final Context context, int position) {
+    public static void setStartingDrawerItem(final Context context, int position) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putInt(Prefs.STARTING_FRAGMENT, position).apply();
+        sp.edit().putInt(Prefs.STARTING_DRAWER_ITEM, position).apply();
     }
 
     public static void registerOnSharedPreferenceChangeListener(final Context context, SharedPreferences.OnSharedPreferenceChangeListener listener) {

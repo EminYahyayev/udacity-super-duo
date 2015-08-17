@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- Mistake: orientation was horizontal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <include layout="@layout/toolbar" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -35,6 +36,6 @@
 
     </LinearLayout>
 
-    <include layout="@layout/drawer" />
+    <include layout="@layout/navigation_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

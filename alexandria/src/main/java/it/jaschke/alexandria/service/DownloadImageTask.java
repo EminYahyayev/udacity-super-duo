@@ -1,4 +1,4 @@
-package it.jaschke.alexandria.services;
+package it.jaschke.alexandria.service;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.io.InputStream;
 
@@ -15,7 +15,7 @@ import it.jaschke.alexandria.ui.adapter.BookListAdapter;
 /**
  * Original image loading task, which was used in {@link BookListAdapter}
  *
- * @deprecated {@link Picasso} is being used instead
+ * @deprecated {@link Glide} is being used instead
  */
 @Deprecated
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

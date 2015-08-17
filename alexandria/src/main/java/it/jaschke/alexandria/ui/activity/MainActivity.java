@@ -4,9 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,7 +20,6 @@ import android.widget.Toast;
 import butterknife.Bind;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.ui.adapter.OnBookClickListener;
-import it.jaschke.alexandria.ui.fragment.AboutFragment;
 import it.jaschke.alexandria.ui.fragment.AddBookFragment;
 import it.jaschke.alexandria.ui.fragment.BookDetailFragment;
 import it.jaschke.alexandria.ui.fragment.ListOfBooksFragment;
@@ -37,15 +34,16 @@ public final class MainActivity extends BaseActivity
 
     public static boolean IS_TABLET = false;
 
-    private static String STATE_SELECTED_POSITION = "state_position";
+    private static String STATE_DRAWER_ITEM = "selected_navigation_drawer_item";
 
-    @Nullable @Bind(R.id.drawer_layout) DrawerLayout mDrawerLayout;
-    @Nullable @Bind(R.id.navigation_view) NavigationView mNavigationView;
+    @Bind(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @Bind(R.id.navigation_view) NavigationView mNavigationView;
 
     private CharSequence title;
-    private int mCurrentSelectedPosition = 0;
+    private int mCurrentDrawerItem;
 
-    private boolean mUserLearnedDrawer = false;
+    private boolean mFromSavedInstanceState;
+    private boolean mUserLearnedDrawer;
     private BroadcastReceiver messageReciever;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -56,12 +54,28 @@ public final class MainActivity extends BaseActivity
 
         IS_TABLET = findViewById(R.id.right_container) != null;
 
+        setupNavDrawer();
+
+        if (savedInstanceState != null) {
+            mCurrentDrawerItem = savedInstanceState.getInt(STATE_DRAWER_ITEM);
+        } else {
+            MenuItem menuItem = mNavigationView.getMenu().findItem(
+                    PrefUtils.getStartingDrawerItem(this, R.id.drawer_item_books)
+            );
+            onNavigationItemSelected(menuItem);
+        }
+
         messageReciever = new MessageReceiver();
         IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, filter);
 
         title = getTitle();
-        setupNavDrawer();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_DRAWER_ITEM, mCurrentDrawerItem);
     }
 
     @Override
@@ -101,10 +115,17 @@ public final class MainActivity extends BaseActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
+        Log.d(TAG, "onNavigationItemSelected: " + menuItem.getTitle());
+
+        int itemId = menuItem.getItemId();
+        if (itemId == mCurrentDrawerItem) {
+            mDrawerLayout.closeDrawers();
+            return false;
+        }
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment nextFragment;
 
-        int itemId = menuItem.getItemId();
         switch (itemId) {
             case R.id.drawer_item_books:
                 nextFragment = new ListOfBooksFragment();
@@ -113,10 +134,10 @@ public final class MainActivity extends BaseActivity
                 nextFragment = new AddBookFragment();
                 break;
             case R.id.drawer_item_settings:
-                nextFragment = new AboutFragment();
-                break;
-            case R.id.drawer_item_about:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return false;
+            case R.id.drawer_item_about:
+                startActivity(new Intent(this, AboutActivity.class));
                 return false;
             default:
                 Log.e(TAG, "No such navdrawer item found.");
@@ -125,9 +146,11 @@ public final class MainActivity extends BaseActivity
 
         fm.beginTransaction()
                 .replace(R.id.container, nextFragment)
-                .addToBackStack((String) title)
                 .commit();
 
+        mCurrentDrawerItem = itemId;
+        menuItem.setChecked(true);
+        closeNavDrawer();
         return true;
     }
 
@@ -140,10 +163,6 @@ public final class MainActivity extends BaseActivity
     }
 
     private void setupNavDrawer() {
-        if (mDrawerLayout == null || mNavigationView == null) {
-            return;
-        }
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerToggle.syncState();
 
@@ -190,16 +209,6 @@ public final class MainActivity extends BaseActivity
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
-    }
-
-    /**
-     * @deprecated In favor of layout configuration qualifiers
-     */
-    @Deprecated
-    private boolean isTablet() {
-        return (getApplicationContext().getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
     private class MessageReceiver extends BroadcastReceiver {

@@ -10,18 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.provider.AlexandriaContract;
-import it.jaschke.alexandria.services.DownloadImageTask;
+import it.jaschke.alexandria.service.DownloadImageTask;
 
 /**
  * Corrections:
  * <ul>
- * <li> {@code Picasso} used instead of {@link DownloadImageTask}
+ * <li> {@code Glide} is used instead of {@link DownloadImageTask}
  * </ul>
  */
 public final class BookListAdapter extends CursorAdapter {
@@ -37,7 +37,7 @@ public final class BookListAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.item_book_list, parent, false);
+        View view = mInflater.inflate(R.layout.item_book, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
@@ -50,8 +50,10 @@ public final class BookListAdapter extends CursorAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
 
         String imgUrl = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        Picasso.with(mContext)
+        Glide.with(mContext)
                 .load(imgUrl)
+                .crossFade()
+                .placeholder(R.color.book_image_placeholder)
                 .into(holder.bookCover);
 
         String bookTitle = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
@@ -62,9 +64,9 @@ public final class BookListAdapter extends CursorAdapter {
     }
 
     static class ViewHolder {
-        @Bind(R.id.fullBookCover) ImageView bookCover;
-        @Bind(R.id.listBookTitle) TextView bookTitle;
-        @Bind(R.id.listBookSubTitle) TextView bookSubTitle;
+        @Bind(R.id.book_cover) ImageView bookCover;
+        @Bind(R.id.book_title) TextView bookTitle;
+        @Bind(R.id.book_subtitle) TextView bookSubTitle;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
