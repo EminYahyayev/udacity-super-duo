@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    package="it.jaschke.alexandria"
+    package="com.ewintory.alexandria"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -9,9 +9,8 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-
     <application
-        android:name=".AlexandriaApplication"
+        android:name="com.ewintory.alexandria.AlexandriaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +18,7 @@
         android:theme="@style/AlexandriaTheme">
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name="com.ewintory.alexandria.ui.activity.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,27 +27,27 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.AddActivity"
+            android:name="com.ewintory.alexandria.ui.activity.AddActivity"
             android:label="@string/title_add_book"
-            android:parentActivityName=".ui.activity.MainActivity" />
+            android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <activity
-            android:name=".ui.activity.AboutActivity"
+            android:name="com.ewintory.alexandria.ui.activity.AboutActivity"
             android:label="@string/title_about"
-            android:parentActivityName=".ui.activity.MainActivity" />
+            android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <activity
-            android:name=".ui.activity.SettingsActivity"
+            android:name="com.ewintory.alexandria.ui.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ui.activity.MainActivity" />
+            android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <provider
-            android:name=".provider.AlexandriaProvider"
+            android:name="com.ewintory.alexandria.provider.AlexandriaProvider"
             android:authorities="it.jaschke.alexandria"
             android:exported="false" />
 
         <service
-            android:name=".service.BookService"
+            android:name="com.ewintory.alexandria.service.BookService"
             android:exported="false" />
 
     </application>

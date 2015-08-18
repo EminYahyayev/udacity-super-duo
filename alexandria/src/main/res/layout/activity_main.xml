@@ -1,6 +1,6 @@
 <fragment
     android:id="@+id/fragment_main"
-    android:name="it.jaschke.alexandria.ui.fragment.BooksFragment"
+    android:name="com.ewintory.alexandria.ui.fragment.BooksFragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
