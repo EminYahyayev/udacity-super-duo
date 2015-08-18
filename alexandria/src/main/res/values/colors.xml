@@ -15,16 +15,18 @@
     <color name="window_background">#e9eaed</color>
     <color name="gray_background">#e4e4e4</color>
 
-    <color name="primary">@color/material_yellow500</color>
-    <color name="primary_dark">@color/material_yellow700</color>
-    <color name="primary_light">@color/material_yellow300</color>
+    <color name="primary">@color/material_amber500</color>
+    <color name="primary_dark">@color/material_amber700</color>
+    <color name="primary_light">@color/material_amber300</color>
     <color name="accent">@color/material_redA200</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
 
     <array name="swipe_progress_colors">
         <item>@color/accent</item>
         <item>@color/primary</item>
     </array>
 
-    <color name="book_image_placeholder">@color/material_yellow600</color>
+    <color name="book_cover_placeholder">@color/material_redA200</color>
 
 </resources>

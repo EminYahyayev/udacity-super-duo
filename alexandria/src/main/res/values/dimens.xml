@@ -18,11 +18,12 @@
     <!-- Common -->
     <item name="match_parent" type="dimen">-1</item>
     <item name="wrap_content" type="dimen">-2</item>
-    <dimen name="toolbar_elevation">8dp</dimen>
-    <dimen name="item_spacing_half">2dp</dimen>
-    <dimen name="item_spacing_full">4dp</dimen>
+    <dimen name="card_spacing_half">4dp</dimen>
+    <dimen name="card_spacing_full">8dp</dimen>
+    <dimen name="element_spacing_small">4dp</dimen>
     <dimen name="element_spacing_normal">8dp</dimen>
     <dimen name="content_padding_normal">16dp</dimen>
+    <dimen name="content_padding_large">24dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <integer name="ean_size">13</integer>
@@ -30,8 +31,12 @@
     <dimen name="head_line">24sp</dimen>
     <dimen name="small_fontsize">12sp</dimen>
 
-    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
-         https://developer.android.com/design/patterns/navigation-drawer.html -->
-    <dimen name="navigation_drawer_width">240dp</dimen>
-    <dimen name="navdrawer_account_height">160dp</dimen>
+    <!-- Fab -->
+    <dimen name="fab_press_translation_z">6dp</dimen>
+    <dimen name="fab_compat_margin">16dp</dimen>
+    <dimen name="fab_compat_border">0dp</dimen>
+
+    <dimen name="book_item_cover_size">112dp</dimen>
+    <dimen name="book_item_width">@dimen/match_parent</dimen>
+
 </resources>

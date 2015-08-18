@@ -27,6 +27,12 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @CallSuper
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @CallSuper
     @Override public void onDestroy() {
         super.onDestroy();
         AlexandriaApplication.get(getActivity()).getRefWatcher().watch(this);

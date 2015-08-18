@@ -53,7 +53,7 @@ public final class BookListAdapter extends CursorAdapter {
         Glide.with(mContext)
                 .load(imgUrl)
                 .crossFade()
-                .placeholder(R.color.book_image_placeholder)
+                .placeholder(R.color.book_cover_placeholder)
                 .into(holder.bookCover);
 
         String bookTitle = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
@@ -64,9 +64,9 @@ public final class BookListAdapter extends CursorAdapter {
     }
 
     static class ViewHolder {
-        @Bind(R.id.book_cover) ImageView bookCover;
-        @Bind(R.id.book_title) TextView bookTitle;
-        @Bind(R.id.book_subtitle) TextView bookSubTitle;
+        @Bind(R.id.book_item_cover) ImageView bookCover;
+        @Bind(R.id.book_item_title) TextView bookTitle;
+        @Bind(R.id.book_item_subtitle) TextView bookSubTitle;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

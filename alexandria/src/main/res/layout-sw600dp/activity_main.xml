@@ -1,4 +1,4 @@
-<android.support.v4.widget.DrawerLayout
+<FrameLayout
     android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -19,6 +19,4 @@
 
     </LinearLayout>
 
-    <include layout="@layout/navigation_drawer" />
-
-</android.support.v4.widget.DrawerLayout>
+</FrameLayout>

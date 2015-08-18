@@ -11,7 +11,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/keyline_1"
         android:layout_marginStart="@dimen/keyline_1"
-        android:contentDescription="@string/book_cover" />
+        android:contentDescription="@string/book_cover"
+        tools:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/book_title"

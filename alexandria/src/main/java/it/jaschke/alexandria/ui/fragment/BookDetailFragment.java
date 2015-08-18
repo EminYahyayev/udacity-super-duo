@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import butterknife.OnClick;
 import it.jaschke.alexandria.R;
@@ -28,7 +28,7 @@ import it.jaschke.alexandria.ui.activity.MainActivity;
 
 public class BookDetailFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String EAN_KEY = "EXTRA_EAN";
+    public static final String ARG_EAN = "EXTRA_EAN";
     private final int LOADER_ID = 10;
 
     private View rootView;
@@ -47,7 +47,7 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return rootView = inflater.inflate(R.layout.fragment_full_book, container, false);
+        return rootView = inflater.inflate(R.layout.fragment_book_details, container, false);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            ean = arguments.getString(BookDetailFragment.EAN_KEY);
+            ean = arguments.getString(BookDetailFragment.ARG_EAN);
             getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
     }
@@ -119,7 +119,7 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
         if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
             ImageView bookCover = (ImageView) rootView.findViewById(R.id.book_cover);
             bookCover.setVisibility(View.VISIBLE);
-            Picasso.with(getActivity())
+            Glide.with(getActivity())
                     .load(imgUrl)
                     .into(bookCover);
         }
@@ -127,7 +127,7 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
 
-        if (rootView.findViewById(R.id.right_container) != null) {
+        if (rootView.findViewById(R.id.book_detail_container) != null) {
             rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
         }
 
@@ -139,7 +139,7 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
     @Override
     public void onPause() {
         super.onDestroyView();
-        if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
+        if (MainActivity.IS_TABLET && rootView.findViewById(R.id.book_detail_container) == null) {
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }

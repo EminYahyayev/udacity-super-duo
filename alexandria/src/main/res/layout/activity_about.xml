@@ -7,11 +7,19 @@
 
     <include layout="@layout/toolbar" />
 
-    <fragment
-        android:id="@+id/fragment_about"
-        android:name="it.jaschke.alexandria.ui.fragment.AboutFragment"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_about" />
+        android:padding="@dimen/keyline_1">
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/about_text" />
+
+    </FrameLayout>
+
 
 </LinearLayout>

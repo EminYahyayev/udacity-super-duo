@@ -9,27 +9,30 @@ import android.support.v4.content.IntentCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import butterknife.Bind;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.utils.PrefUtils;
 
 public class SettingsActivity extends BaseActivity {
+
+    @Bind(R.id.toolbar) Toolbar mToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Toolbar toolbar = getToolbar();
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.title_settings);
-            toolbar.setNavigationIcon(R.drawable.ic_up);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    navigateUpToFromChild(SettingsActivity.this,
-                            IntentCompat.makeMainActivity(new ComponentName(SettingsActivity.this, MainActivity.class)));
-                }
-            });
-        }
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//        mToolbar.setTitle(R.string.title_settings);
+//        mToolbar.setNavigationIcon(R.drawable.ic_up);
+//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override public void onClick(View v) {
+//                navigateUpToFromChild(SettingsActivity.this,
+//                        IntentCompat.makeMainActivity(new ComponentName(SettingsActivity.this, MainActivity.class)));
+//            }
+//        });
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()

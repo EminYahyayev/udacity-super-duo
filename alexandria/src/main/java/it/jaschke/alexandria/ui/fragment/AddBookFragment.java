@@ -14,17 +14,23 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.provider.AlexandriaContract;
 import it.jaschke.alexandria.service.BookService;
-import it.jaschke.alexandria.service.DownloadImageTask;
 
 public final class AddBookFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
@@ -36,7 +42,17 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
     private final String EAN_CONTENT = "eanContent";
 
     private View rootView;
-    @Bind(R.id.ean) EditText ean;
+    @Bind(R.id.ean) EditText mEanView;
+    @Bind(R.id.book_title) TextView mBookTitleView;
+    @Bind(R.id.book_subtitle) TextView mBookSubtitleView;
+    @Bind(R.id.authors) TextView mAuthorsView;
+    @Bind(R.id.categories) TextView mCategoriesView;
+    @Bind(R.id.book_cover) ImageView mBookCoverView;
+    @Bind(R.id.save_button) Button mSaveButton;
+    @Bind(R.id.delete_button) Button mDeleteButton;
+
+    @Bind({R.id.book_title, R.id.book_subtitle, R.id.authors, R.id.categories})
+    List<Button> mTextViews;
 
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
@@ -58,7 +74,7 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ean.addTextChangedListener(new TextWatcher() {
+        mEanView.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {/** ignore */}
 
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {/** ignore */}
@@ -83,16 +99,16 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
         });
 
         if (savedInstanceState != null) {
-            ean.setText(savedInstanceState.getString(EAN_CONTENT));
-            ean.setHint("");
+            mEanView.setText(savedInstanceState.getString(EAN_CONTENT));
+            mEanView.setHint("");
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (ean != null) {
-            outState.putString(EAN_CONTENT, ean.getText().toString());
+        if (mEanView != null) {
+            outState.putString(EAN_CONTENT, mEanView.getText().toString());
         }
     }
 
@@ -114,24 +130,24 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
 
     @OnClick(R.id.save_button)
     public void onSaveButton() {
-        ean.setText("");
+        mEanView.setText("");
     }
 
     @OnClick(R.id.delete_button)
     public void onDeleteButton() {
         Intent bookIntent = new Intent(getActivity(), BookService.class);
-        bookIntent.putExtra(BookService.EXTRA_EAN, ean.getText().toString());
+        bookIntent.putExtra(BookService.EXTRA_EAN, mEanView.getText().toString());
         bookIntent.setAction(BookService.DELETE_BOOK);
         getActivity().startService(bookIntent);
-        ean.setText("");
+        mEanView.setText("");
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (ean.getText().length() == 0) {
+        if (mEanView.getText().length() == 0) {
             return null;
         }
-        String eanStr = ean.getText().toString();
+        String eanStr = mEanView.getText().toString();
         if (eanStr.length() == 10 && !eanStr.startsWith("978")) {
             eanStr = "978" + eanStr;
         }
@@ -152,26 +168,29 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
         }
 
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
+        mBookTitleView.setText(bookTitle);
 
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
+        mBookSubtitleView.setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
         String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",", "\n"));
+        mAuthorsView.setLines(authorsArr.length);
+        mAuthorsView.setText(authors.replace(",", "\n"));
+
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
-            new DownloadImageTask((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
-            rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
+            mBookCoverView.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(imgUrl)
+                    .crossFade()
+                    .into((ImageView) rootView.findViewById(R.id.bookCover));
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
+        mCategoriesView.setText(categories);
 
-        rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
+        ButterKnife.apply(Arrays.asList(mSaveButton, mDeleteButton), VISIBLE, true);
     }
 
     @Override
@@ -182,12 +201,19 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
     }
 
     private void clearFields() {
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");
-        ((TextView) rootView.findViewById(R.id.authors)).setText("");
-        ((TextView) rootView.findViewById(R.id.categories)).setText("");
-        rootView.findViewById(R.id.bookCover).setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+        ButterKnife.apply(mTextViews, TEXT, "");
+        ButterKnife.apply(Arrays.asList(mBookCoverView, mSaveButton, mDeleteButton), VISIBLE, false);
     }
+
+    static final ButterKnife.Setter<TextView, String> TEXT = new ButterKnife.Setter<TextView, String>() {
+        @Override public void set(TextView textView, String text, int index) {
+            textView.setText(text);
+        }
+    };
+
+    static final ButterKnife.Setter<View, Boolean> VISIBLE = new ButterKnife.Setter<View, Boolean>() {
+        @Override public void set(View view, Boolean visible, int index) {
+            view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        }
+    };
 }

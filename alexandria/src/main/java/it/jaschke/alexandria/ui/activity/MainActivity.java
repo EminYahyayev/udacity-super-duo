@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015.  Emin Yahyayev
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package it.jaschke.alexandria.ui.activity;
 
 import android.content.BroadcastReceiver;
@@ -5,210 +21,114 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import it.jaschke.alexandria.R;
-import it.jaschke.alexandria.ui.adapter.OnBookClickListener;
-import it.jaschke.alexandria.ui.fragment.AddBookFragment;
 import it.jaschke.alexandria.ui.fragment.BookDetailFragment;
-import it.jaschke.alexandria.ui.fragment.ListOfBooksFragment;
-import it.jaschke.alexandria.utils.PrefUtils;
+import it.jaschke.alexandria.ui.fragment.BooksFragment;
 
 
-public final class MainActivity extends BaseActivity
-        implements OnBookClickListener, NavigationView.OnNavigationItemSelectedListener {
+public final class MainActivity extends BaseActivity implements BooksFragment.Listener {
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String DETAIL_FRAGMENT_TAG = "DFTAG";
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
 
     public static boolean IS_TABLET = false;
 
-    private static String STATE_DRAWER_ITEM = "selected_navigation_drawer_item";
+    @Bind(R.id.toolbar) Toolbar mToolbar;
 
-    @Bind(R.id.drawer_layout) DrawerLayout mDrawerLayout;
-    @Bind(R.id.navigation_view) NavigationView mNavigationView;
-
-    private CharSequence title;
-    private int mCurrentDrawerItem;
-
-    private boolean mFromSavedInstanceState;
-    private boolean mUserLearnedDrawer;
-    private BroadcastReceiver messageReciever;
-    private ActionBarDrawerToggle mDrawerToggle;
+    private boolean mTwoPane;
+    private BroadcastReceiver messageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        IS_TABLET = findViewById(R.id.right_container) != null;
+        setSupportActionBar(mToolbar);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        setupNavDrawer();
-
-        if (savedInstanceState != null) {
-            mCurrentDrawerItem = savedInstanceState.getInt(STATE_DRAWER_ITEM);
+        if (null != findViewById(R.id.book_detail_container)) {
+            // The detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.book_detail_container, new BookDetailFragment(), DETAIL_FRAGMENT_TAG)
+                        .commit();
+            }
         } else {
-            MenuItem menuItem = mNavigationView.getMenu().findItem(
-                    PrefUtils.getStartingDrawerItem(this, R.id.drawer_item_books)
-            );
-            onNavigationItemSelected(menuItem);
+            mTwoPane = false;
         }
 
-        messageReciever = new MessageReceiver();
+        messageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, filter);
-
-        title = getTitle();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(STATE_DRAWER_ITEM, mCurrentDrawerItem);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (R.id.action_settings == id) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        } else if (R.id.action_about == id) {
+            startActivity(new Intent(this, AboutActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
         super.onDestroy();
     }
 
     @Override
-    public void onItemSelected(String ean) {
-        Bundle args = new Bundle();
-        args.putString(BookDetailFragment.EAN_KEY, ean);
+    public void onBookSelected(String ean) {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            Bundle args = new Bundle();
+            args.putString(BookDetailFragment.ARG_EAN, ean);
 
-        BookDetailFragment fragment = new BookDetailFragment();
-        fragment.setArguments(args);
+            BookDetailFragment fragment = new BookDetailFragment();
+            fragment.setArguments(args);
 
-        int id = R.id.container;
-        if (findViewById(R.id.right_container) != null) {
-            id = R.id.right_container;
-        }
-        getSupportFragmentManager().beginTransaction()
-                .replace(id, fragment)
-                .addToBackStack("Book Detail")
-                .commit();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isNavDrawerOpen()) {
-            closeNavDrawer();
-        } else if (getSupportFragmentManager().getBackStackEntryCount() < 2) {
-            finish();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.book_detail_container, fragment, DETAIL_FRAGMENT_TAG)
+                    .commit();
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .putExtra(DetailActivity.EXTRA_EAN, ean);
+            //startActivity(intent);
         }
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
-        Log.d(TAG, "onNavigationItemSelected: " + menuItem.getTitle());
-
-        int itemId = menuItem.getItemId();
-        if (itemId == mCurrentDrawerItem) {
-            mDrawerLayout.closeDrawers();
-            return false;
-        }
-
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment nextFragment;
-
-        switch (itemId) {
-            case R.id.drawer_item_books:
-                nextFragment = new ListOfBooksFragment();
-                break;
-            case R.id.drawer_item_add_book:
-                nextFragment = new AddBookFragment();
-                break;
-            case R.id.drawer_item_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return false;
-            case R.id.drawer_item_about:
-                startActivity(new Intent(this, AboutActivity.class));
-                return false;
-            default:
-                Log.e(TAG, "No such navdrawer item found.");
-                return false;
-        }
-
-        fm.beginTransaction()
-                .replace(R.id.container, nextFragment)
-                .commit();
-
-        mCurrentDrawerItem = itemId;
-        menuItem.setChecked(true);
-        closeNavDrawer();
-        return true;
-    }
-
-    public void setTitle(int titleId) {
-        title = getString(titleId);
-    }
-
-    public void goBack(View view) {
-        getSupportFragmentManager().popBackStack();
-    }
-
-    private void setupNavDrawer() {
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerToggle.syncState();
-
-        // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-            @Override public void onDrawerSlide(View drawerView, float slideOffset) {
-                mDrawerToggle.onDrawerSlide(drawerView, slideOffset);
-            }
-
-            @Override public void onDrawerOpened(View drawerView) {
-                mDrawerToggle.onDrawerOpened(drawerView);
-            }
-
-            @Override public void onDrawerClosed(View drawerView) {
-                mDrawerToggle.onDrawerClosed(drawerView);
-                if (!mUserLearnedDrawer) {
-                    mUserLearnedDrawer = true;
-                    PrefUtils.markDrawerLearned(MainActivity.this);
-                }
-            }
-
-            @Override public void onDrawerStateChanged(int newState) {
-                mDrawerToggle.onDrawerStateChanged(newState);
-            }
-        });
-
-        mNavigationView.setNavigationItemSelectedListener(this);
-        mUserLearnedDrawer = PrefUtils.isDrawerLearned(this);
-        if (!mUserLearnedDrawer) openNavDrawer();
-    }
-
-    private boolean isNavDrawerOpen() {
-        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START);
-    }
-
-    private void openNavDrawer() {
-        if (mDrawerLayout != null) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-        }
-    }
-
-    private void closeNavDrawer() {
-        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
+    @OnClick(R.id.add_book_fab)
+    public void onAddBookClicked() {
+        startActivity(new Intent(this, AddActivity.class));
     }
 
     private class MessageReceiver extends BroadcastReceiver {
@@ -217,6 +137,5 @@ public final class MainActivity extends BaseActivity
                 Toast.makeText(MainActivity.this, intent.getStringExtra(MESSAGE_KEY), Toast.LENGTH_LONG).show();
             }
         }
-
     }
 }
