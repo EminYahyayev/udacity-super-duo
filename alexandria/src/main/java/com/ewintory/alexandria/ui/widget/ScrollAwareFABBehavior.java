@@ -24,8 +24,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * <a src="https://guides.codepath.com/android/Floating-Action-Buttons">Followed by this guide</a>
+ * Followed by <a href="https://guides.codepath.com/android/Floating-Action-Buttons">Codepath's guide</a>
  */
+@SuppressWarnings("unused")
 public final class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {
 
     public ScrollAwareFABBehavior(Context context, AttributeSet attrs) {
@@ -33,11 +34,10 @@ public final class ScrollAwareFABBehavior extends FloatingActionButton.Behavior 
     }
 
     @Override
-    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout,
-                                       FloatingActionButton child, View directTargetChild, View target, int nestedScrollAxes) {
+    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionButton child,
+                                       View directTargetChild, View target, int nestedScrollAxes) {
         return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL ||
-                super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target,
-                        nestedScrollAxes);
+                super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
     }
 
     @Override

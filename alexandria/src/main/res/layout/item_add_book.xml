@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2015.  Emin Yahyayev
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<android.support.v7.widget.CardView
+    android:id="@+id/add_book_card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/book_item_width"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:clickable="false"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:visibility="gone"
+    app:cardElevation="@dimen/appbar_elevation"
+    tools:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/listPreferredItemHeight"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/content_padding_normal"
+                android:layout_marginStart="@dimen/content_padding_normal"
+                android:layout_marginTop="@dimen/content_padding_large"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/add_book_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    tools:text="Title here" />
+
+                <TextView
+                    android:id="@+id/add_book_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/add_book_title"
+                    android:layout_marginTop="@dimen/element_spacing_small"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/body_text_2"
+                    tools:text="Subtitle here" />
+
+                <TextView
+                    android:id="@+id/add_book_authors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/add_book_subtitle"
+                    android:layout_marginTop="@dimen/element_spacing_normal"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="@color/body_text_2"
+                    tools:text="Author1, Author2" />
+
+                <TextView
+                    android:id="@+id/add_book_categories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/add_book_authors"
+                    android:layout_marginTop="@dimen/element_spacing_normal"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="@color/body_text_2"
+                    android:visibility="gone"
+                    tools:text="Author1, Author2" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/add_book_cover"
+                android:layout_width="@dimen/add_book_cover_size"
+                android:layout_height="@dimen/add_book_cover_size"
+                android:layout_marginLeft="@dimen/content_padding_normal"
+                android:layout_marginRight="@dimen/content_padding_normal"
+                android:layout_marginTop="@dimen/content_padding_normal"
+                android:contentDescription="@string/book_cover"
+                android:scaleType="centerCrop"
+                tools:src="@android:color/darker_gray" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/element_spacing_small">
+
+            <Button
+                android:id="@+id/dismiss_button"
+                style="?attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_dismiss"
+                android:textColor="@color/secondary_text" />
+
+            <Button
+                android:id="@+id/save_button"
+                style="?attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/element_spacing_small"
+                android:layout_marginStart="@dimen/element_spacing_small"
+                android:text="@string/button_save" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

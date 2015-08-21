@@ -19,14 +19,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-
-import butterknife.OnClick;
-import it.jaschke.alexandria.R;
+import com.ewintory.alexandria.R;
 import com.ewintory.alexandria.provider.AlexandriaContract;
 import com.ewintory.alexandria.service.BookService;
 import com.ewintory.alexandria.ui.activity.MainActivity;
 
-public class BookDetailFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+import butterknife.OnClick;
+
+public final class BookDetailFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String ARG_EAN = "EXTRA_EAN";
     private final int LOADER_ID = 10;
@@ -68,7 +68,7 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
         shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
     }
 
-    @OnClick(R.id.delete_button)
+    @OnClick(R.id.cancel_button)
     public void onDeleteButton() {
         Intent bookIntent = new Intent(getActivity(), BookService.class);
         bookIntent.putExtra(BookService.EXTRA_EAN, ean);
@@ -112,12 +112,12 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
         String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",", "\n"));
+        ((TextView) rootView.findViewById(R.id.add_book_authors)).setLines(authorsArr.length);
+        ((TextView) rootView.findViewById(R.id.add_book_authors)).setText(authors.replace(",", "\n"));
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
-            ImageView bookCover = (ImageView) rootView.findViewById(R.id.book_cover);
+            ImageView bookCover = (ImageView) rootView.findViewById(R.id.add_book_cover);
             bookCover.setVisibility(View.VISIBLE);
             Glide.with(getActivity())
                     .load(imgUrl)
@@ -125,7 +125,7 @@ public class BookDetailFragment extends BaseFragment implements LoaderManager.Lo
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
+        ((TextView) rootView.findViewById(R.id.add_book_categories)).setText(categories);
 
         if (rootView.findViewById(R.id.book_detail_container) != null) {
             rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);

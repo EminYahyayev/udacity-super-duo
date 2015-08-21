@@ -2,7 +2,7 @@
 <resources>
     <string-array name="pref_start_options">
         <item>@string/title_books</item>
-        <item>@string/title_scan</item>
+        <item>@string/title_add_book</item>
     </string-array>
 
     <string-array name="pref_start_values">

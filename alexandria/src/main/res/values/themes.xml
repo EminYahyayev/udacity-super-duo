@@ -9,4 +9,10 @@
         <item name="toolbarStyle">@style/Toolbar</item>
     </style>
 
+    <style name="AlexandriaTheme.Dialog">
+        <item name="android:windowNoTitle">false</item>
+        <!--<item name="android:windowFullscreen">true</item>-->
+        <!--<item name="android:windowIsFloating">false</item>-->
+    </style>
+
 </resources>

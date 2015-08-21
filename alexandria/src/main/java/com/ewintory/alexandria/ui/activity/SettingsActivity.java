@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.widget.Toolbar;
 
-import butterknife.Bind;
-import it.jaschke.alexandria.R;
+import com.ewintory.alexandria.R;
 import com.ewintory.alexandria.utils.PrefUtils;
 
-public class SettingsActivity extends BaseActivity {
+import butterknife.Bind;
+
+public final class SettingsActivity extends BaseActivity {
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
 

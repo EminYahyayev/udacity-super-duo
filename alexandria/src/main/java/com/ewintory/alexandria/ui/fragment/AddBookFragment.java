@@ -1,13 +1,14 @@
 package com.ewintory.alexandria.ui.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -21,18 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ewintory.alexandria.R;
+import com.ewintory.alexandria.provider.AlexandriaContract;
 import com.ewintory.alexandria.service.BookService;
-
-import java.util.Arrays;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import it.jaschke.alexandria.R;
-import com.ewintory.alexandria.provider.AlexandriaContract;
 
-public final class AddBookFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public final class AddBookFragment extends BaseDialogFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
 
     private static final String SCAN_FORMAT = "scanFormat";
@@ -42,17 +40,15 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
     private final String EAN_CONTENT = "eanContent";
 
     private View rootView;
-    @Bind(R.id.ean) EditText mEanView;
-    @Bind(R.id.book_title) TextView mBookTitleView;
-    @Bind(R.id.book_subtitle) TextView mBookSubtitleView;
-    @Bind(R.id.authors) TextView mAuthorsView;
-    @Bind(R.id.categories) TextView mCategoriesView;
-    @Bind(R.id.book_cover) ImageView mBookCoverView;
+    @Bind(R.id.add_book_card) CardView mBookCardView;
+    @Bind(R.id.add_book_ean) EditText mEanView;
+    @Bind(R.id.add_book_title) TextView mBookTitleView;
+    @Bind(R.id.add_book_subtitle) TextView mBookSubtitleView;
+    @Bind(R.id.add_book_authors) TextView mAuthorsView;
+    @Bind(R.id.add_book_categories) TextView mCategoriesView;
+    @Bind(R.id.add_book_cover) ImageView mBookCoverView;
     @Bind(R.id.save_button) Button mSaveButton;
-    @Bind(R.id.delete_button) Button mDeleteButton;
-
-    @Bind({R.id.book_title, R.id.book_subtitle, R.id.authors, R.id.categories})
-    List<Button> mTextViews;
+    @Bind(R.id.dismiss_button) Button mDismissButton;
 
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
@@ -60,9 +56,9 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
     public AddBookFragment() { }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        activity.setTitle(R.string.title_scan);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AlexandriaTheme_Dialog);
     }
 
     @Override
@@ -73,6 +69,7 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getDialog().setTitle(R.string.title_add_book);
 
         mEanView.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {/** ignore */}
@@ -86,7 +83,7 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
                     ean = "978" + ean;
                 }
                 if (ean.length() < 13) {
-                    clearFields();
+                    hideCard();
                     return;
                 }
                 //Once we have an ISBN, start a book intent
@@ -112,7 +109,7 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
         }
     }
 
-    @OnClick(R.id.scan_button)
+    //@OnClick(R.id.scan_button)
     public void onScanButton() {
         // This is the callback method that the system will invoke when your button is
         // clicked. You might do this by launching another app or by including the
@@ -130,15 +127,15 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
 
     @OnClick(R.id.save_button)
     public void onSaveButton() {
-        mEanView.setText("");
-    }
-
-    @OnClick(R.id.delete_button)
-    public void onDeleteButton() {
         Intent bookIntent = new Intent(getActivity(), BookService.class);
         bookIntent.putExtra(BookService.EXTRA_EAN, mEanView.getText().toString());
         bookIntent.setAction(BookService.DELETE_BOOK);
         getActivity().startService(bookIntent);
+        mEanView.setText("");
+    }
+
+    @OnClick(R.id.cancel_button)
+    public void onCancelButton() {
         mEanView.setText("");
     }
 
@@ -180,17 +177,16 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
-            mBookCoverView.setVisibility(View.VISIBLE);
             Glide.with(this)
                     .load(imgUrl)
                     .crossFade()
-                    .into((ImageView) rootView.findViewById(R.id.bookCover));
+                    .into(mBookCoverView);
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         mCategoriesView.setText(categories);
 
-        ButterKnife.apply(Arrays.asList(mSaveButton, mDeleteButton), VISIBLE, true);
+        mBookCardView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -200,9 +196,8 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
-    private void clearFields() {
-        ButterKnife.apply(mTextViews, TEXT, "");
-        ButterKnife.apply(Arrays.asList(mBookCoverView, mSaveButton, mDeleteButton), VISIBLE, false);
+    private void hideCard() {
+        mBookCardView.setVisibility(View.GONE);
     }
 
     static final ButterKnife.Setter<TextView, String> TEXT = new ButterKnife.Setter<TextView, String>() {
@@ -214,6 +209,12 @@ public final class AddBookFragment extends BaseFragment implements LoaderManager
     static final ButterKnife.Setter<View, Boolean> VISIBLE = new ButterKnife.Setter<View, Boolean>() {
         @Override public void set(View view, Boolean visible, int index) {
             view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        }
+    };
+
+    static final ButterKnife.Setter<View, Boolean> ENABLED = new ButterKnife.Setter<View, Boolean>() {
+        @Override public void set(View view, Boolean value, int index) {
+            view.setEnabled(value);
         }
     };
 }

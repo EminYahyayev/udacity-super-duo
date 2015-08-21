@@ -6,7 +6,7 @@ import android.content.Context;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-public class AlexandriaApplication extends Application {
+public final class AlexandriaApplication extends Application {
 
     private RefWatcher mRefWatcher;
 

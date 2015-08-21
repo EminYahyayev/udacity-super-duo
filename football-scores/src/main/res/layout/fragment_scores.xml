@@ -1,0 +1,32 @@
+<com.ewintory.footballscores.ui.widget.MultiSwipeRefreshLayout
+    android:id="@+id/swipe_refresh_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/scores_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="@dimen/card_spacing_half" />
+
+        <com.ewintory.footballscores.ui.widget.AnimatorStateView
+            android:id="@+id/scores_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:paddingBottom="?attr/actionBarSize"
+            app:messageImage="@drawable/ic_state_empty"
+            app:messageText="@string/scores_empty_message"
+            tools:alpha="1" />
+
+    </FrameLayout>
+
+</com.ewintory.footballscores.ui.widget.MultiSwipeRefreshLayout>

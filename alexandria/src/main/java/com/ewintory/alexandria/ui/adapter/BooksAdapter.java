@@ -28,26 +28,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ewintory.alexandria.R;
+import com.ewintory.alexandria.provider.AlexandriaContract;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import it.jaschke.alexandria.R;
-import com.ewintory.alexandria.provider.AlexandriaContract;
-import com.ewintory.alexandria.service.DownloadImageTask;
 
-/**
- * Corrections:
- * <ul>
- * <li> {@code Glide} is used instead of {@link DownloadImageTask}
- * </ul>
- */
 public final class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookHolder> {
 
     public interface OnBookItemClickListener {
-        void onBookItemClick(int position, View view);
+        void onBookItemClicked(int position, View view);
 
         OnBookItemClickListener DUMMY = new OnBookItemClickListener() {
-            @Override public void onBookItemClick(int position, View view) { }
+            @Override public void onBookItemClicked(int position, View view) { }
         };
     }
 
@@ -114,7 +107,7 @@ public final class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookHo
             ButterKnife.bind(this, view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    mListener.onBookItemClick(getAdapterPosition(), v);
+                    mListener.onBookItemClicked(getAdapterPosition(), v);
                 }
             });
         }

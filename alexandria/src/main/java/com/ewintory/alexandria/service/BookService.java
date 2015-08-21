@@ -8,6 +8,10 @@ import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.ewintory.alexandria.R;
+import com.ewintory.alexandria.provider.AlexandriaContract;
+import com.ewintory.alexandria.ui.activity.MainActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,23 +23,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import it.jaschke.alexandria.R;
-import com.ewintory.alexandria.provider.AlexandriaContract;
-import com.ewintory.alexandria.ui.activity.MainActivity;
-
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  * <p/>
  */
-public class BookService extends IntentService {
+public final class BookService extends IntentService {
     private final String LOG_TAG = BookService.class.getSimpleName();
 
-    public static final String FETCH_BOOK = "it.jaschke.alexandria.services.action.FETCH_BOOK";
-    public static final String DELETE_BOOK = "it.jaschke.alexandria.services.action.DELETE_BOOK";
+    public static final String FETCH_BOOK = "com.ewintory.alexandria.services.action.FETCH_BOOK";
+    public static final String DELETE_BOOK = "com.ewintory.alexandria.services.action.DELETE_BOOK";
 
-    public static final String EXTRA_EAN = "it.jaschke.alexandria.services.extras.EXTRA_EAN";
+    public static final String EXTRA_EAN = "com.ewintory.alexandria.services.extras.EXTRA_EAN";
 
     public BookService() {
         super("Alexandria");
@@ -126,6 +126,7 @@ public class BookService extends IntentService {
                 return;
             }
             bookJsonString = buffer.toString();
+            Log.d(LOG_TAG, "bookJsonString=" + bookJsonString);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error ", e);
         } finally {

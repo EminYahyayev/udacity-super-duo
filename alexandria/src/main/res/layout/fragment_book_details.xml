@@ -33,7 +33,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/book_cover"
+                    android:id="@+id/add_book_cover"
                     android:contentDescription="@string/book_cover"
                     android:layout_marginTop="15dp"
                     android:layout_below="@+id/fullBookTitle"
@@ -49,9 +49,9 @@
                     android:textSize="18sp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="10dp"
-                    android:layout_alignTop="@+id/book_cover"
-                    android:layout_toRightOf="@+id/book_cover"
-                    android:layout_toEndOf="@+id/book_cover"/>
+                    android:layout_alignTop="@+id/add_book_cover"
+                    android:layout_toRightOf="@+id/add_book_cover"
+                    android:layout_toEndOf="@+id/add_book_cover"/>
 
 
                 <TextView
@@ -60,7 +60,7 @@
                     android:id="@+id/fullBookDesc"
                     android:ellipsize="end"
                     android:layout_marginLeft="10dp"
-                    android:layout_below="@+id/book_cover"
+                    android:layout_below="@+id/add_book_cover"
                     android:layout_margin="10dp"
                     />
 
@@ -76,14 +76,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/categories"
+                        android:id="@+id/add_book_categories"
                         android:layout_weight="1"
                         android:gravity="left|top"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/authors"
+                        android:id="@+id/add_book_authors"
                         android:layout_weight="1"
                         android:textStyle="bold"
                         android:gravity="right|top"/>
@@ -92,7 +92,7 @@
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/back_button"
+                    android:contentDescription="@string/button_back"
                     android:id="@+id/backButton"
                     android:onClick="goBack"
                     android:src="@drawable/ic_action_undo"
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/delete"
                 style="?android:attr/buttonBarButtonStyle"
-                android:id="@+id/delete_button"
+                android:id="@+id/cancel_button"
                 android:drawableLeft="@drawable/ic_action_discard"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="5dp"/>

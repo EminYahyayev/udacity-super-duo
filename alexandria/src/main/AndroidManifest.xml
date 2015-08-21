@@ -10,7 +10,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-        android:name="com.ewintory.alexandria.AlexandriaApplication"
+        android:name=".AlexandriaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,8 +27,8 @@
         </activity>
 
         <activity
-            android:name="com.ewintory.alexandria.ui.activity.AddActivity"
-            android:label="@string/title_add_book"
+            android:name="com.ewintory.alexandria.ui.activity.DetailActivity"
+            android:label="@string/title_book_detail"
             android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <activity
@@ -38,17 +38,15 @@
 
         <activity
             android:name="com.ewintory.alexandria.ui.activity.SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:label="@string/title_settings"
             android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <provider
             android:name="com.ewintory.alexandria.provider.AlexandriaProvider"
-            android:authorities="it.jaschke.alexandria"
+            android:authorities="com.ewintory.alexandria"
             android:exported="false" />
 
-        <service
-            android:name="com.ewintory.alexandria.service.BookService"
-            android:exported="false" />
+        <service android:name="com.ewintory.alexandria.service.BookService" />
 
     </application>
 

@@ -21,23 +21,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.ewintory.alexandria.R;
+import com.ewintory.alexandria.ui.fragment.AddBookFragment;
 import com.ewintory.alexandria.ui.fragment.BookDetailFragment;
 import com.ewintory.alexandria.ui.fragment.BooksFragment;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import it.jaschke.alexandria.R;
 
 
 public final class MainActivity extends BaseActivity implements BooksFragment.Listener {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAIL_FRAGMENT_TAG = "DFTAG";
+    private static final String ADD_FRAGMENT_TAG = "AFTAG";
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
@@ -129,7 +132,8 @@ public final class MainActivity extends BaseActivity implements BooksFragment.Li
 
     @OnClick(R.id.add_book_fab)
     public void onAddBookClicked() {
-        startActivity(new Intent(this, AddActivity.class));
+        AddBookFragment fragment = new AddBookFragment();
+        fragment.show(getSupportFragmentManager(), ADD_FRAGMENT_TAG);
     }
 
     private class MessageReceiver extends BroadcastReceiver {

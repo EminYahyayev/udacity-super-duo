@@ -22,8 +22,14 @@
     <dimen name="card_spacing_full">8dp</dimen>
     <dimen name="element_spacing_small">4dp</dimen>
     <dimen name="element_spacing_normal">8dp</dimen>
+    <dimen name="content_padding_small">8dp</dimen>
     <dimen name="content_padding_normal">16dp</dimen>
     <dimen name="content_padding_large">24dp</dimen>
+
+    <!-- Fab -->
+    <dimen name="fab_press_translation_z">6dp</dimen>
+    <dimen name="fab_compat_margin">16dp</dimen>
+    <dimen name="fab_compat_border">0dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <integer name="ean_size">13</integer>
@@ -31,12 +37,8 @@
     <dimen name="head_line">24sp</dimen>
     <dimen name="small_fontsize">12sp</dimen>
 
-    <!-- Fab -->
-    <dimen name="fab_press_translation_z">6dp</dimen>
-    <dimen name="fab_compat_margin">16dp</dimen>
-    <dimen name="fab_compat_border">0dp</dimen>
-
     <dimen name="book_item_cover_size">112dp</dimen>
+    <dimen name="add_book_cover_size">112dp</dimen>
     <dimen name="book_item_width">@dimen/match_parent</dimen>
 
 </resources>

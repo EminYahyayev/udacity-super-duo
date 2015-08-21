@@ -16,17 +16,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.ewintory.alexandria.R;
+import com.ewintory.alexandria.provider.AlexandriaContract;
 import com.ewintory.alexandria.ui.adapter.BooksAdapter;
 
 import butterknife.Bind;
-import it.jaschke.alexandria.R;
-import com.ewintory.alexandria.provider.AlexandriaContract;
 
 
 /**
  * Mistakes found:
- * - ContentResolver#query on UI thread.
+ * <ul>
+ * <li> {@code ContentResolver#query} was called on UI thread(in Fragment#onCreateView method)
+ * </ul>
  */
 public final class BooksFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>,
         BooksAdapter.OnBookItemClickListener, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
@@ -69,7 +72,7 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.fragment_books, container, false);
     }
 
     @Override
@@ -111,7 +114,11 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        if (R.id.action_search == item.getItemId()) {
+            Toast.makeText(getActivity(), "Searching feature", Toast.LENGTH_SHORT).show();
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -139,7 +146,7 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
     }
 
     @Override
-    public void onBookItemClick(int position, View view) {
+    public void onBookItemClicked(int position, View view) {
         Cursor cursor = mBooksAdapter.getCursor();
         if (cursor != null && cursor.moveToPosition(position)) {
             mListener.onBookSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
@@ -151,14 +158,8 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
         restartLoader();
     }
 
-    //@OnClick(R.id.searchButton)
-    public void onSearchButtonClick() {
-        restartLoader();
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         final String selection = AlexandriaContract.BookEntry.TITLE + " LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
         String searchString = ""; //TODO: searchText.getText().toString();
 

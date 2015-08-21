@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="transparent">#00000000</color>
+
+    <color name="body_text_1">#de000000</color>
+    <color name="body_text_2">#8a000000</color>
+    <color name="body_text_3">#60000000</color>
+    <color name="body_text_white">#FFFFFFFF</color>
+    <color name="body_text_disabled">#44000000</color>
+
+    <color name="body_text_1_inverse">#deffffff</color>
+    <color name="body_text_2_inverse">#8affffff</color>
+
+    <color name="window_background">#e9eaed</color>
+    <color name="gray_background">#e4e4e4</color>
+
+    <color name="primary">@color/material_green500</color>
+    <color name="primary_dark">@color/material_green700</color>
+    <color name="primary_light">@color/material_green100</color>
+    <color name="accent">@color/material_amberA400</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+
+    <array name="swipe_progress_colors">
+        <item>@color/accent</item>
+        <item>@color/primary</item>
+    </array>
+
     <color name="blue01">#0099CC</color>
     <color name="blue02">#079DD0</color>
     <color name="blue03">#0FA1D3</color>

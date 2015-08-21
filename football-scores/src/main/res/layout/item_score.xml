@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/card_spacing_half"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    tools:layout_margin="@dimen/card_spacing_full">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/score_item_league"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/content_padding_normal"
+            android:layout_marginStart="@dimen/content_padding_normal"
+            android:layout_marginTop="@dimen/content_padding_normal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            tools:text="Championship league" />
+
+        <TextView
+            android:id="@+id/score_item_matchday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/element_spacing_normal"
+            android:drawableLeft="@drawable/ic_directions_run_black_18dp"
+            android:drawablePadding="@dimen/keyline_1_minus_8dp"
+            android:drawableStart="@drawable/ic_directions_run_black_18dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/secondary_text"
+            tools:text="Match day: 2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true"
+            android:orientation="horizontal"
+            android:padding="@dimen/content_padding_normal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/score_item_home_crest"
+                    android:layout_width="@dimen/score_item_crest_size"
+                    android:layout_height="@dimen/score_item_crest_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/home_team_crest"
+                    tools:src="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/score_item_home_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/body_text_2"
+                    tools:text="Barcelona" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/score_item_score"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="?attr/colorAccent"
+                tools:text="6 - 1" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/score_item_away_crest"
+                    android:layout_width="@dimen/score_item_crest_size"
+                    android:layout_height="@dimen/score_item_crest_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/away_team_crest"
+                    tools:src="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/score_item_away_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/body_text_2"
+                    tools:text="Manchester" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_background" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/element_spacing_small">
+
+            <Button
+                android:id="@+id/share_button"
+                style="?attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/share_button"
+                android:textColor="?android:textColorSecondary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
+
+

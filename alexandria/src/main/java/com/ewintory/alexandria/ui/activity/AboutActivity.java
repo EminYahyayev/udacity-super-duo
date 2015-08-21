@@ -20,8 +20,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.ewintory.alexandria.R;
+
 import butterknife.Bind;
-import it.jaschke.alexandria.R;
 
 public final class AboutActivity extends BaseActivity {
 

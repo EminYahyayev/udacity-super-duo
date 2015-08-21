@@ -1,10 +1,35 @@
 <resources>
+
+    <!-- Keylines -->
+    <dimen name="keyline_1">16dp</dimen>
+    <dimen name="keyline_1_minus_8dp">8dp</dimen>
+    <dimen name="keyline_2">72dp</dimen>
+    <dimen name="keyline_2_minus_16dp">56dp</dimen>
+
+    <!-- Texts -->
+    <dimen name="text_size_xsmall">11sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_xlarge">20sp</dimen>
+    <dimen name="text_size_xxlarge">24sp</dimen>
+    <dimen name="text_size_diff_large_small">6sp</dimen>
+
+    <!-- Common -->
+    <item name="match_parent" type="dimen">-1</item>
+    <item name="wrap_content" type="dimen">-2</item>
+    <dimen name="card_spacing_half">4dp</dimen>
+    <dimen name="card_spacing_full">8dp</dimen>
+    <dimen name="element_spacing_small">4dp</dimen>
+    <dimen name="element_spacing_normal">8dp</dimen>
+    <dimen name="content_padding_small">8dp</dimen>
+    <dimen name="content_padding_normal">16dp</dimen>
+    <dimen name="content_padding_large">24dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="list_horizonal_matgin">2dp</dimen>
     <dimen name="share_button_margin">150dp</dimen>
     <dimen name="TeamNames">17sp</dimen>
     <dimen name="Score">30sp</dimen>
     <dimen name="League">15sp</dimen>
+    <dimen name="score_item_crest_size">72dp</dimen>
 </resources>
