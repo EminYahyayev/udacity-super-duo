@@ -16,20 +16,13 @@
 
 package com.ewintory.alexandria.ui.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.ewintory.alexandria.R;
-import com.ewintory.alexandria.ui.fragment.AddBookFragment;
 import com.ewintory.alexandria.ui.fragment.BookDetailFragment;
 import com.ewintory.alexandria.ui.fragment.BooksFragment;
 
@@ -42,15 +35,11 @@ public final class MainActivity extends BaseActivity implements BooksFragment.Li
     private static final String DETAIL_FRAGMENT_TAG = "DFTAG";
     private static final String ADD_FRAGMENT_TAG = "AFTAG";
 
-    public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
-    public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
-
     public static boolean IS_TABLET = false;
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
 
     private boolean mTwoPane;
-    private BroadcastReceiver messageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +47,6 @@ public final class MainActivity extends BaseActivity implements BooksFragment.Li
         setContentView(R.layout.activity_main);
 
         setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         if (null != findViewById(R.id.book_detail_container)) {
             // The detail container view will be present only in the large-screen layouts
@@ -76,10 +64,6 @@ public final class MainActivity extends BaseActivity implements BooksFragment.Li
         } else {
             mTwoPane = false;
         }
-
-        messageReceiver = new MessageReceiver();
-        IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
     }
 
     @Override
@@ -92,20 +76,11 @@ public final class MainActivity extends BaseActivity implements BooksFragment.Li
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (R.id.action_settings == id) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        } else if (R.id.action_about == id) {
+        if (R.id.action_about == id) {
             startActivity(new Intent(this, AboutActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
-        super.onDestroy();
     }
 
     @Override
@@ -132,15 +107,6 @@ public final class MainActivity extends BaseActivity implements BooksFragment.Li
 
     @OnClick(R.id.add_book_fab)
     public void onAddBookClicked() {
-        AddBookFragment fragment = new AddBookFragment();
-        fragment.show(getSupportFragmentManager(), ADD_FRAGMENT_TAG);
-    }
-
-    private class MessageReceiver extends BroadcastReceiver {
-        @Override public void onReceive(Context context, Intent intent) {
-            if (intent.getStringExtra(MESSAGE_KEY) != null) {
-                Toast.makeText(MainActivity.this, intent.getStringExtra(MESSAGE_KEY), Toast.LENGTH_LONG).show();
-            }
-        }
+        startActivity(new Intent(this, AddActivity.class));
     }
 }

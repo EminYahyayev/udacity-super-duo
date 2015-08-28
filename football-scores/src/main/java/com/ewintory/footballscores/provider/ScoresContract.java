@@ -22,6 +22,21 @@ public final class ScoresContract {
     // Possible paths (appended to base content URI for possible URI's)
     public static final String PATH_SCORES = "scores";
 
+    public interface Leagues {
+        String BUNDESLIGA1 = "394";
+        String BUNDESLIGA2 = "395";
+        String LIGUE1 = "396";
+        String LIGUE2 = "397";
+        String PREMIER_LEAGUE = "398";
+        String PRIMERA_DIVISION = "399";
+        String SEGUNDA_DIVISION = "400";
+        String SERIE_A = "401";
+        String PRIMERA_LIGA = "402";
+        String BUNDESLIGA3 = "403";
+        String EREDIVISIE = "404";
+        String CHAMPIONS_LEAGUE = "362";
+    }
+
     public static final class ScoreEntry implements BaseColumns {
         //public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_SCORES).build();
 

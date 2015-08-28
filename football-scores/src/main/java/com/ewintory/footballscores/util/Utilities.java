@@ -8,25 +8,51 @@ import com.ewintory.footballscores.R;
 public final class Utilities {
 
     public interface Leagues {
-        int SERIE_A = 401;
-        int LIGUE_2 = 397;
-        int PREMIER_LEAGUE = 402;
-        int CHAMPIONS_LEAGUE = 362;
+        int BUNDESLIGA1 = 394;
+        int BUNDESLIGA2 = 395;
+        int LIGUE1 = 396;
+        int LIGUE2 = 397;
+        int PREMIER_LEAGUE = 398;
         int PRIMERA_DIVISION = 399;
-        int BUNDESLIGA = 403;
+        int SEGUNDA_DIVISION = 400;
+        int SERIE_A = 401;
+        int PRIMERA_LIGA = 402;
+        int BUNDESLIGA3 = 403;
+        int EREDIVISIE = 404;
+        int CHAMPIONS_LEAGUE = 362;
     }
 
-    @Deprecated
-    public static boolean isValidLeague(int leagueId) {
-        return leagueId == Leagues.SERIE_A ||
-                leagueId == Leagues.LIGUE_2 ||
-                leagueId == Leagues.PREMIER_LEAGUE ||
-                leagueId == Leagues.CHAMPIONS_LEAGUE ||
-                leagueId == Leagues.PRIMERA_DIVISION ||
-                leagueId == Leagues.BUNDESLIGA;
+    public static String getLeague(Resources res, int leagueId) {
+        switch (leagueId) {
+            case Leagues.CHAMPIONS_LEAGUE:
+                return res.getString(R.string.champions_league);
+            case Leagues.SERIE_A:
+                return res.getString(R.string.seriaa);
+            case Leagues.PREMIER_LEAGUE:
+                return res.getString(R.string.premierleague);
+            case Leagues.PRIMERA_DIVISION:
+                return res.getString(R.string.primeradivison);
+            case Leagues.BUNDESLIGA1:
+                return res.getString(R.string.bundesliga1);
+            case Leagues.BUNDESLIGA2:
+                return res.getString(R.string.bundesliga2);
+            case Leagues.BUNDESLIGA3:
+                return res.getString(R.string.bundesliga3);
+            case Leagues.LIGUE1:
+                return res.getString(R.string.ligue1);
+            case Leagues.LIGUE2:
+                return res.getString(R.string.ligue2);
+            case Leagues.SEGUNDA_DIVISION:
+                return res.getString(R.string.segunda_division);
+            case Leagues.PRIMERA_LIGA:
+                return res.getString(R.string.primera_liga);
+            case Leagues.EREDIVISIE:
+                return res.getString(R.string.eredivise);
+            default:
+                return res.getString(R.string.undefined_league);
+        }
     }
 
-    @Deprecated
     public static String getMatchDay(Resources res, int matchDay, int leagueId) {
         if (leagueId == Leagues.CHAMPIONS_LEAGUE) {
             if (matchDay <= 6) {
@@ -55,7 +81,8 @@ public final class Utilities {
 
     public static int getTeamCrestByTeamName(String teamname) {
         if (teamname == null) {return R.drawable.no_icon;}
-        switch (teamname) {
+        switch (teamname) { //This is the set of icons that are currently in the app. Feel free to find and add more
+            //as you go.
             case "Arsenal London FC":
                 return R.drawable.arsenal;
             case "Manchester United FC":

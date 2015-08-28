@@ -17,11 +17,9 @@
 package com.ewintory.alexandria.ui.adapter;
 
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,7 +32,7 @@ import com.ewintory.alexandria.provider.AlexandriaContract;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookHolder> {
+public final class BooksAdapter extends CursorAdapter<BooksAdapter.BookHolder> {
 
     public interface OnBookItemClickListener {
         void onBookItemClicked(int position, View view);
@@ -44,15 +42,27 @@ public final class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookHo
         };
     }
 
-    private final Fragment mFragment;
-    private final LayoutInflater mInflater;
+    public interface BooksQuery {
+        String[] PROJECTION = {
+                AlexandriaContract.BookEntry._ID,
+                AlexandriaContract.BookEntry.TITLE,
+                AlexandriaContract.BookEntry.SUBTITLE,
+                AlexandriaContract.BookEntry.IMAGE_URL
+        };
 
-    private Cursor mCursor;
+        int ID = 0;
+        int TITLE = 1;
+        int SUBTITLE = 2;
+        int IMAGE_URL = 3;
+    }
+
+    private final Fragment mFragment;
     private OnBookItemClickListener mListener = OnBookItemClickListener.DUMMY;
 
     public BooksAdapter(Fragment fragment) {
-        mInflater = LayoutInflater.from(fragment.getActivity());
+        super(fragment.getActivity());
         mFragment = fragment;
+        setHasStableIds(true);
     }
 
     public BooksAdapter setListener(@NonNull OnBookItemClickListener listener) {
@@ -60,40 +70,32 @@ public final class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookHo
         return this;
     }
 
-    public void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
-        notifyDataSetChanged();
-    }
-
-    public Cursor getCursor() {
-        return mCursor;
-    }
-
     @Override
-    public int getItemCount() {
-        return mCursor != null ? mCursor.getCount() : 0;
+    public long getItemId(int position) {
+        mCursor.moveToPosition(position);
+        return mCursor.getLong(BooksQuery.ID);
     }
 
     @Override
     public BookHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new BookHolder(mInflater.inflate(R.layout.item_book, viewGroup, false));
+        return new BookHolder(mInflater.inflate(R.layout.item_book_v2, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(BookHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        String imgUrl = mCursor.getString(mCursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+        String imgUrl = mCursor.getString(BooksQuery.IMAGE_URL);
         Glide.with(mFragment)
                 .load(imgUrl)
                 .crossFade()
                 .placeholder(R.color.book_cover_placeholder)
                 .into(holder.bookCover);
 
-        String bookTitle = mCursor.getString(mCursor.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+        String bookTitle = mCursor.getString(BooksQuery.TITLE);
         holder.bookTitle.setText(bookTitle);
 
-        String bookSubTitle = mCursor.getString(mCursor.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
+        String bookSubTitle = mCursor.getString(BooksQuery.SUBTITLE);
         holder.bookSubTitle.setText(bookSubTitle);
     }
 

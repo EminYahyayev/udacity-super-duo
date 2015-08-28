@@ -72,7 +72,7 @@ public final class BookDetailFragment extends BaseFragment implements LoaderMana
     public void onDeleteButton() {
         Intent bookIntent = new Intent(getActivity(), BookService.class);
         bookIntent.putExtra(BookService.EXTRA_EAN, ean);
-        bookIntent.setAction(BookService.DELETE_BOOK);
+        bookIntent.setAction(BookService.ACTION_DELETE_BOOK);
         getActivity().startService(bookIntent);
         getActivity().getSupportFragmentManager().popBackStack();
     }
@@ -112,12 +112,12 @@ public final class BookDetailFragment extends BaseFragment implements LoaderMana
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
         String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.add_book_authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.add_book_authors)).setText(authors.replace(",", "\n"));
+        ((TextView) rootView.findViewById(R.id.book_authors)).setLines(authorsArr.length);
+        ((TextView) rootView.findViewById(R.id.book_authors)).setText(authors.replace(",", "\n"));
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
-            ImageView bookCover = (ImageView) rootView.findViewById(R.id.add_book_cover);
+            ImageView bookCover = (ImageView) rootView.findViewById(R.id.book_image);
             bookCover.setVisibility(View.VISIBLE);
             Glide.with(getActivity())
                     .load(imgUrl)
@@ -125,7 +125,7 @@ public final class BookDetailFragment extends BaseFragment implements LoaderMana
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        ((TextView) rootView.findViewById(R.id.add_book_categories)).setText(categories);
+        ((TextView) rootView.findViewById(R.id.book_categories)).setText(categories);
 
         if (rootView.findViewById(R.id.book_detail_container) != null) {
             rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);

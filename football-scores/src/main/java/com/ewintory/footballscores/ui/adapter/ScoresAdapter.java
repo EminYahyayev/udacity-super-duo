@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.StreamEncoder;
 import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
 import com.caverock.androidsvg.SVG;
@@ -64,6 +62,24 @@ public final class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.View
         };
     }
 
+    public interface ScoresQuery {
+        String[] PROJECTION = {
+                ScoresContract.ScoreEntry.COLUMN_LEAGUE,
+                ScoresContract.ScoreEntry.COLUMN_HOME,
+                ScoresContract.ScoreEntry.COLUMN_AWAY,
+                ScoresContract.ScoreEntry.COLUMN_HOME_GOALS,
+                ScoresContract.ScoreEntry.COLUMN_AWAY_GOALS,
+                ScoresContract.ScoreEntry.COLUMN_MATCH_DAY
+        };
+
+        int LEAGUE = 0;
+        int HOME = 1;
+        int AWAY = 2;
+        int HOME_GOALS = 3;
+        int AWAY_GOALS = 4;
+        int MATCH_DAY = 5;
+    }
+
     private final Fragment mFragment;
     private final LayoutInflater mInflater;
     private final GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
@@ -81,7 +97,7 @@ public final class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.View
                 .as(SVG.class)
                 .transcode(new SvgDrawableTranscoder(), PictureDrawable.class)
                 .sourceEncoder(new StreamEncoder())
-                .cacheDecoder(new FileToStreamDecoder<SVG>(new SvgDecoder()))
+                .cacheDecoder(new FileToStreamDecoder<>(new SvgDecoder()))
                 .decoder(new SvgDecoder())
                 .placeholder(R.color.primary_light)
                 .error(R.drawable.no_icon)
@@ -118,29 +134,31 @@ public final class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.View
         final Resources res = mFragment.getResources();
         mCursor.moveToPosition(position);
 
-        holder.mLeagueName.setText(mCursor.getString(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_LEAGUE_CAPTION)));
-        holder.mHomeName.setText(mCursor.getString(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_HOME)));
-        holder.mAwayName.setText(mCursor.getString(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_AWAY)));
+        holder.mLeagueName.setText(Utilities.getLeague(res, mCursor.getInt(ScoresQuery.LEAGUE)));
+        holder.mHomeName.setText(mCursor.getString(ScoresQuery.HOME));
+        holder.mAwayName.setText(mCursor.getString(ScoresQuery.AWAY));
         holder.mMatchDay.setText(res.getString(R.string.match_day,
-                mCursor.getInt(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_MATCH_DAY))));
+                mCursor.getInt(ScoresQuery.MATCH_DAY)));
         holder.mScore.setText(Utilities.getScores(res,
-                mCursor.getInt(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_HOME_GOALS)),
-                mCursor.getInt(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_AWAY_GOALS))));
+                mCursor.getInt(ScoresQuery.HOME_GOALS),
+                mCursor.getInt(ScoresQuery.AWAY_GOALS)));
 
-        Uri uri = Uri.parse(mCursor.getString(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_HOME_CREST)));
-        //Log.d("ScoresAdapter", "Home crest url=" + mCursor.getString(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_HOME_CREST)));
-        requestBuilder
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .load(uri)
-                .into(holder.mHomeCrest);
+        holder.mHomeCrest.setImageResource(Utilities.getTeamCrestByTeamName(
+                mCursor.getString(ScoresQuery.HOME)));
+        holder.mAwayCrest.setImageResource(Utilities.getTeamCrestByTeamName(
+                mCursor.getString(ScoresQuery.AWAY)));
 
-
-        uri = Uri.parse(mCursor.getString(mCursor.getColumnIndex(ScoresContract.ScoreEntry.COLUMN_AWAY_CREST)));
-        //Log.d("ScoresAdapter", "Away crest url=" + uri);
-        requestBuilder
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .load(uri)
-                .into(holder.mAwayCrest);
+//        Uri uri = Uri.parse(mCursor.getString(ScoresQuery.HOME_CREST));
+//        requestBuilder
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .load(uri)
+//                .into(holder.mHomeCrest);
+//
+//        uri = Uri.parse(mCursor.getString(ScoresQuery.AWAY_CREST));
+//        requestBuilder
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .load(uri)
+//                .into(holder.mAwayCrest);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -166,7 +184,7 @@ public final class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.View
         }
 
         @OnClick(R.id.share_button) void onShare() {
-            mListener.onShareScoreItemClicked(String.format("%s %s %s",
+            mListener.onShareScoreItemClicked(mFragment.getString(R.string.score_share_template,
                     mHomeName.getText(), mScore.getText(), mAwayName.getText()));
         }
     }

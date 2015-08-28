@@ -3,14 +3,18 @@ package com.ewintory.alexandria.service;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.ewintory.alexandria.R;
 import com.ewintory.alexandria.provider.AlexandriaContract;
 import com.ewintory.alexandria.ui.activity.MainActivity;
+import com.ewintory.alexandria.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +24,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -32,10 +38,23 @@ import java.net.URL;
 public final class BookService extends IntentService {
     private final String LOG_TAG = BookService.class.getSimpleName();
 
-    public static final String FETCH_BOOK = "com.ewintory.alexandria.services.action.FETCH_BOOK";
-    public static final String DELETE_BOOK = "com.ewintory.alexandria.services.action.DELETE_BOOK";
+    public static final String ACTION_FETCH_BOOK = "com.ewintory.alexandria.services.action.ACTION_FETCH_BOOK";
+    public static final String ACTION_DELETE_BOOK = "com.ewintory.alexandria.services.action.ACTION_DELETE_BOOK";
 
     public static final String EXTRA_EAN = "com.ewintory.alexandria.services.extras.EXTRA_EAN";
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({BOOK_SERVICE_STATUS_OK,
+            BOOK_SERVICE_STATUS_SERVER_DOWN,
+            BOOK_SERVICE_STATUS_SERVER_INVALID,
+            BOOK_SERVICE_STATUS_UNKNOWN,
+            BOOK_SERVICE_STATUS_INVALID})
+    public @interface BookServiceStatus {}
+    public static final int BOOK_SERVICE_STATUS_OK = 0;
+    public static final int BOOK_SERVICE_STATUS_SERVER_DOWN = 1;
+    public static final int BOOK_SERVICE_STATUS_SERVER_INVALID = 2;
+    public static final int BOOK_SERVICE_STATUS_UNKNOWN = 3;
+    public static final int BOOK_SERVICE_STATUS_INVALID = 4;
 
     public BookService() {
         super("Alexandria");
@@ -45,10 +64,10 @@ public final class BookService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (FETCH_BOOK.equals(action)) {
+            if (ACTION_FETCH_BOOK.equals(action)) {
                 final String ean = intent.getStringExtra(EXTRA_EAN);
                 fetchBook(ean);
-            } else if (DELETE_BOOK.equals(action)) {
+            } else if (ACTION_DELETE_BOOK.equals(action)) {
                 final String ean = intent.getStringExtra(EXTRA_EAN);
                 deleteBook(ean);
             }
@@ -59,9 +78,10 @@ public final class BookService extends IntentService {
      * Handle action deleteBook in the provided background thread with the provided
      * parameters.
      */
-    private void deleteBook(String ean) {
-        if (ean != null) {
-            getContentResolver().delete(AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
+    private void deleteBook(String eanStr) {
+        long longEan = Utils.convertEanStringToLong(eanStr);
+        if (longEan != -1) {
+            getContentResolver().delete(AlexandriaContract.BookEntry.buildBookUri(longEan), null, null);
         }
     }
 
@@ -112,6 +132,7 @@ public final class BookService extends IntentService {
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
+                setBookServiceStatus(BOOK_SERVICE_STATUS_SERVER_DOWN);
                 return;
             }
 
@@ -123,12 +144,14 @@ public final class BookService extends IntentService {
             }
 
             if (buffer.length() == 0) {
+                setBookServiceStatus(BOOK_SERVICE_STATUS_SERVER_DOWN);
                 return;
             }
             bookJsonString = buffer.toString();
             Log.d(LOG_TAG, "bookJsonString=" + bookJsonString);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error ", e);
+            setBookServiceStatus(BOOK_SERVICE_STATUS_SERVER_DOWN);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -160,10 +183,9 @@ public final class BookService extends IntentService {
             JSONArray bookArray;
             if (bookJson.has(ITEMS)) {
                 bookArray = bookJson.getJSONArray(ITEMS);
+                setBookServiceStatus(BOOK_SERVICE_STATUS_OK);
             } else {
-                Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
-                messageIntent.putExtra(MainActivity.MESSAGE_KEY, getResources().getString(R.string.not_found));
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
+                setBookServiceStatus(BOOK_SERVICE_STATUS_INVALID);
                 return;
             }
 
@@ -197,6 +219,7 @@ public final class BookService extends IntentService {
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error ", e);
+            setBookServiceStatus(BOOK_SERVICE_STATUS_SERVER_INVALID);
         }
     }
 
@@ -228,5 +251,13 @@ public final class BookService extends IntentService {
             getContentResolver().insert(AlexandriaContract.CategoryEntry.CONTENT_URI, values);
             values = new ContentValues();
         }
+    }
+
+    private void setBookServiceStatus(@BookServiceStatus int status) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BookService.this);
+        SharedPreferences.Editor e = prefs.edit();
+        Log.d(LOG_TAG, "Status = " + status);
+        e.putInt(getString(R.string.pref_book_service_status_key), status);
+        e.apply();
     }
 }

@@ -10,6 +10,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,9 +35,11 @@ import butterknife.Bind;
 public final class BooksFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>,
         BooksAdapter.OnBookItemClickListener, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
 
+    private static final String TAG = BooksFragment.class.getSimpleName();
     private static final int LOADER_ID = 10;
 
     @Bind(R.id.books_recycler_view) RecyclerView mBooksRecyclerView;
+    @Bind(R.id.books_empty_view) View mEmptyView;
     @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.app_bar) AppBarLayout mAppBarLayout;
 
@@ -168,7 +171,7 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
             return new CursorLoader(
                     getActivity(),
                     AlexandriaContract.BookEntry.CONTENT_URI,
-                    null,
+                    BooksAdapter.BooksQuery.PROJECTION,
                     selection,
                     new String[]{searchString, searchString},
                     null
@@ -178,7 +181,7 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
         return new CursorLoader(
                 getActivity(),
                 AlexandriaContract.BookEntry.CONTENT_URI,
-                null, // leaving "columns" null just returns all the columns.
+                BooksAdapter.BooksQuery.PROJECTION,
                 null, // cols for "where" clause
                 null, // values for "where" clause
                 null  // sort order
@@ -186,14 +189,18 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        final int size = cursor.getCount();
+        Log.v(TAG, String.format("%d books loaded", size));
+
         mSwipeRefreshLayout.post(new Runnable() {
             @Override public void run() {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        mBooksAdapter.swapCursor(data);
+        showEmptyView(size == 0);
+        mBooksAdapter.swapCursor(cursor);
         if (mPosition != RecyclerView.NO_POSITION) {
             mBooksRecyclerView.smoothScrollToPosition(mPosition);
         }
@@ -202,10 +209,14 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mBooksAdapter.swapCursor(null);
+        showEmptyView(true);
     }
 
     private void restartLoader() {
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
+    private void showEmptyView(boolean show) {
+        if (mEmptyView != null) mEmptyView.animate().alpha(show ? 1 : 0).setDuration(200).start();
+    }
 }

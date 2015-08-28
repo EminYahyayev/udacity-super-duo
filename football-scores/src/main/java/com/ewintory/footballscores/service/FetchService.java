@@ -32,6 +32,8 @@ import retrofit.RestAdapter;
 public final class FetchService extends IntentService {
     private static final String TAG = FetchService.class.getSimpleName();
 
+    public static final String BROADCAST_DATA_UPDATED = "com.ewintory.footballscores.BROADCAST_DATA_UPDATED";
+
     private static final String API_URL = "http://api.football-data.org/alpha";
     private static final String SEASON_LINK = API_URL + "/soccerseasons/";
     private static final String MATCH_LINK = API_URL + "/fixtures/";
@@ -60,34 +62,38 @@ public final class FetchService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        fetchFixtures("n3");
-        fetchFixtures("p3");
+        fetchFixtures("n3", "p3");
     }
 
-    private void fetchFixtures(String timeFrame) {
-        FixturesResponse response = null;
+    private void fetchFixtures(String... timeFrames) {
+        List<Fixture> fixtures = null;
 
         try {
-            response = mFootballApi.fixtures(timeFrame);
+            for (String tf : timeFrames) {
+                FixturesResponse response = mFootballApi.fixtures(tf);
+                if (fixtures == null)
+                    fixtures = response.getFixtures();
+                else
+                    fixtures.addAll(response.getFixtures());
+            }
         } catch (Exception e) {
             Log.e(TAG, "Exception here" + e.getMessage());
         }
 
-        if (response != null)
-            processFixturesResponse(response);
+        if (fixtures != null)
+            processFixtures(fixtures);
     }
 
-    private void processFixturesResponse(final FixturesResponse fixturesResponse) {
-        final List<Fixture> fixtures = fixturesResponse.getFixtures();
+    private void processFixtures(final List<Fixture> fixtures) {
         Log.v(TAG, String.format("Processing fixtures, %d total items.", fixtures.size()));
 
-        final Map<String, Team> teamMap = getTeamsMap();
-        final Map<String, Season> seasonMap = getSeasonsMap();
+        //final Map<String, Team> teamMap = getTeamsMap();
+        //final Map<String, Season> seasonMap = getSeasonsMap();
         final Map<String, Integer> matchDateMap = new HashMap<>(); // for testing
 
         //Match data
         String matchId = null;
-        String league = null;
+        String leagueId = null;
         String leagueCaption = null;
         String matchDate = null;
         String matchTime = null;
@@ -103,10 +109,26 @@ public final class FetchService extends IntentService {
         Vector<ContentValues> values = new Vector<>(fixtures.size());
         for (Fixture fixture : fixtures) {
             matchId = extractId(fixture.getLinks().getSelf(), MATCH_LINK);
-            league = extractId(fixture.getLinks().getSoccerSeason(), SEASON_LINK);
+            leagueId = extractId(fixture.getLinks().getSoccerSeason(), SEASON_LINK);
 
-            if (seasonMap.containsKey(league)) {
-                leagueCaption = seasonMap.get(league).getCaption();
+            //This if statement controls which leagues we're interested in the data from.
+            //add leagues here in order to have them be added to the DB.
+            // If you are finding no data in the app, check that this contains all the leagues.
+            // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
+            if (leagueId.equals(ScoresContract.Leagues.PREMIER_LEAGUE) ||
+                    leagueId.equals(ScoresContract.Leagues.SERIE_A) ||
+                    leagueId.equals(ScoresContract.Leagues.CHAMPIONS_LEAGUE) ||
+                    leagueId.equals(ScoresContract.Leagues.BUNDESLIGA1) ||
+                    leagueId.equals(ScoresContract.Leagues.BUNDESLIGA2) ||
+                    leagueId.equals(ScoresContract.Leagues.BUNDESLIGA3) ||
+                    leagueId.equals(ScoresContract.Leagues.EREDIVISIE) ||
+                    leagueId.equals(ScoresContract.Leagues.LIGUE1) ||
+                    leagueId.equals(ScoresContract.Leagues.LIGUE2) ||
+                    leagueId.equals(ScoresContract.Leagues.SEGUNDA_DIVISION) ||
+                    leagueId.equals(ScoresContract.Leagues.PRIMERA_LIGA) ||
+                    leagueId.equals(ScoresContract.Leagues.PRIMERA_DIVISION)) {
+
+                //leagueCaption = seasonMap.get(leagueId).getCaption();
                 matchDate = fixture.getDate();
                 matchTime = matchDate.substring(matchDate.indexOf("T") + 1, matchDate.indexOf("Z"));
                 matchDate = matchDate.substring(0, matchDate.indexOf("T"));
@@ -127,8 +149,8 @@ public final class FetchService extends IntentService {
                 homeTeamName = fixture.getHomeTeamName();
                 awayTeamName = fixture.getAwayTeamName();
 
-                homeTeamCrest = teamMap.get(extractId(fixture.getLinks().getHomeTeam(), TEAMS_LINK)).getCrestUrl();
-                awayTeamCrest = teamMap.get(extractId(fixture.getLinks().getAwayTeam(), TEAMS_LINK)).getCrestUrl();
+//                homeTeamCrest = teamMap.get(extractId(fixture.getLinks().getHomeTeam(), TEAMS_LINK)).getCrestUrl();
+//                awayTeamCrest = teamMap.get(extractId(fixture.getLinks().getAwayTeam(), TEAMS_LINK)).getCrestUrl();
 
                 goalsHomeTeam = fixture.getResult().getGoalsHomeTeam();
                 goalsAwayTeam = fixture.getResult().getGoalsAwayTeam();
@@ -146,17 +168,17 @@ public final class FetchService extends IntentService {
                 matchValues.put(ScoresContract.ScoreEntry.COLUMN_TIME, matchTime);
                 matchValues.put(ScoresContract.ScoreEntry.COLUMN_HOME, homeTeamName);
                 matchValues.put(ScoresContract.ScoreEntry.COLUMN_AWAY, awayTeamName);
-                matchValues.put(ScoresContract.ScoreEntry.COLUMN_HOME_CREST, homeTeamCrest);
-                matchValues.put(ScoresContract.ScoreEntry.COLUMN_AWAY_CREST, awayTeamCrest);
+//                matchValues.put(ScoresContract.ScoreEntry.COLUMN_HOME_CREST, homeTeamCrest);
+//                matchValues.put(ScoresContract.ScoreEntry.COLUMN_AWAY_CREST, awayTeamCrest);
                 matchValues.put(ScoresContract.ScoreEntry.COLUMN_HOME_GOALS, goalsHomeTeam);
                 matchValues.put(ScoresContract.ScoreEntry.COLUMN_AWAY_GOALS, goalsAwayTeam);
-                matchValues.put(ScoresContract.ScoreEntry.COLUMN_LEAGUE, league);
-                matchValues.put(ScoresContract.ScoreEntry.COLUMN_LEAGUE_CAPTION, leagueCaption);
+                matchValues.put(ScoresContract.ScoreEntry.COLUMN_LEAGUE, leagueId);
+                //matchValues.put(ScoresContract.ScoreEntry.COLUMN_LEAGUE_CAPTION, leagueCaption);
                 matchValues.put(ScoresContract.ScoreEntry.COLUMN_MATCH_DAY, matchDay);
 
                 values.add(matchValues);
             } else {
-                Log.w(TAG, "Invalid league id=" + league);
+                Log.w(TAG, "Invalid league id=" + leagueId);
             }
         }
 
@@ -168,7 +190,10 @@ public final class FetchService extends IntentService {
         values.toArray(contentValues);
         int insertedData = getContentResolver().bulkInsert(ScoresContract.BASE_CONTENT_URI, contentValues);
 
-        Log.v(TAG, "Successfully Inserted : " + String.valueOf(insertedData));
+        if (insertedData > 0) {
+            Log.v(TAG, "Successfully Inserted : " + String.valueOf(insertedData));
+            sendBroadcast(new Intent(BROADCAST_DATA_UPDATED).setPackage(getPackageName()));
+        }
     }
 
     private Map<String, Season> getSeasonsMap() {

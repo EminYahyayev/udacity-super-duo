@@ -122,7 +122,7 @@ public class ScoresProvider extends ContentProvider {
     @Override
     public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        //db.delete(ScoresContract.ScoreEntry.TABLE_NAME, null, null);
+        db.delete(ScoresContract.ScoreEntry.TABLE_NAME, null, null);
 
         switch (matchUri(uri)) {
             case MATCHES:

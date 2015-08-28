@@ -12,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -52,6 +55,8 @@ public class ScoresFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         mScoresDate = getArguments().getString(ARG_DATE);
         mLogTag = mLogTag.concat("#" + mScoresDate);
     }
@@ -90,10 +95,26 @@ public class ScoresFragment extends BaseFragment
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_scores, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.action_refresh == item.getItemId()) {
+            postRefreshing(true);
+            onRefresh();
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(getActivity(),
                 ScoresContract.ScoreEntry.buildScoreWithDate(),
-                null,
+                ScoresAdapter.ScoresQuery.PROJECTION,
                 null,
                 new String[]{mScoresDate},
                 null);
@@ -122,8 +143,13 @@ public class ScoresFragment extends BaseFragment
     }
 
     @Override
-    public void onShareScoreItemClicked(String shareText) { }
-
+    public void onShareScoreItemClicked(String shareText) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+        startActivity(shareIntent);
+    }
 
     @Override
     public void onRefresh() {
@@ -140,11 +166,11 @@ public class ScoresFragment extends BaseFragment
     }
 
     private void showEmptyView(boolean show) {
-        mEmptyView.animate().alpha(show ? 1 : 0).setDuration(200).start();
+        if (mEmptyView != null) mEmptyView.animate().alpha(show ? 1 : 0).setDuration(200).start();
     }
 
     private void postRefreshing(final boolean refreshing) {
-        Log.v(mLogTag, "postRefreshing: refreshing=" + refreshing);
+        //Log.v(mLogTag, "postRefreshing: refreshing=" + refreshing);
         if (mSwipeRefreshLayout != null)
             mSwipeRefreshLayout.post(new Runnable() {
                 @Override public void run() {
@@ -154,7 +180,7 @@ public class ScoresFragment extends BaseFragment
     }
 
     private void updateScores() {
-        Intent service_start = new Intent(getActivity(), FetchService.class);
-        getActivity().startService(service_start);
+        Intent intent = new Intent(getActivity(), FetchService.class);
+        getActivity().startService(intent);
     }
 }

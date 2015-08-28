@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2015.  Emin Yahyayev
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +14,19 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<EditText
+    android:id="@+id/add_book_ean"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.MainActivity">
-
-    <item
-        android:id="@+id/action_save"
-        android:orderInCategory="1"
-        android:title="@string/action_save"
-        app:showAsAction="always" />
-
-</menu>
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:hint="@string/ean_input_hint"
+    android:inputType="number"
+    android:maxLength="@integer/ean_size"
+    android:minEms="@integer/ean_width"
+    android:saveEnabled="true"
+    android:singleLine="true"
+    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+    android:textColor="@color/body_text_white"
+    android:textColorHint="@color/body_text_white"
+    tools:background="@color/primary" />

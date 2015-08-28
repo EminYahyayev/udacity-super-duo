@@ -25,7 +25,7 @@
     <string name="scores">%1$s - %2$s</string>
     <string name="match_day">Match day: %1$s</string>
     <string name="group_stages">Group Stages, Matchday: %1$s</string>
-    <string name="score_share_template">%1$s %2$s %3$s</string>
+    <string name="score_share_template">%1$s %2$s %3$s #Football_Scores</string>
 
     <string name="group_stage_text">Group stages</string>
     <string name="first_knockout_round">First knockout round</string>
@@ -36,19 +36,36 @@
     <string name="away_team_crest">Crest of away team</string>
     <string name="home_team_crest">Crest of home team</string>
 
+    <!-- Leagues -->
+    <string name="champions_league" translatable="false">UEFA Champions League</string>
+    <string name="bundesliga1" translatable="false">Bundesliga 1</string>
+    <string name="bundesliga2" translatable="false">Bundesliga 2</string>
+    <string name="bundesliga3" translatable="false">Bundesliga 3</string>
+    <string name="premierleague" translatable="false">Premier League</string>
+    <string name="primeradivison" translatable="false">Primera Division</string>
+    <string name="seriaa" translatable="false">Serie A</string>
+    <string name="eredivise" translatable="false">Eredivise</string>
+    <string name="primera_liga" translatable="false">Primera Liga</string>
+    <string name="segunda_division" translatable="false">Segunda Division</string>
+    <string name="ligue2" translatable="false">Ligue 2</string>
+    <string name="ligue1" translatable="false">Ligue 1</string>
 
     <!-- About -->
     <string name="about_text">
         This Application get Football Matches Score for the Premier League,Seria A,Bundesliga,Primera Division
         and the Uefa Champions League.
-        All Matches data are acquired from football-data.org free API.
+        All Matches mCursor are acquired from football-mCursor.org free API.
         All team Logos are acquired from http://hdlogo.wordpress.com/ upon requesting permission form the owner.
         The original version of this app was created by Yahia Khalid Ibn El Walid Ahmed, and a modified version is given to students in the Udacity Android Nanodegree program.
         To report any bugs,or suggestions do not hesitate to send a mail to y.k.ibnelwalid@gmail.com.
 
-        During the off season, fake data will be added to the app.
+        During the off season, fake mCursor will be added to the app.
     </string>
     <string name="scores_empty_message">There are no scores for this day.</string>
+    <string name="widget_empty_message">There are no scores for today.</string>
     <string name="message_empty_image">No items image</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="title_widget_scores">Todays Scores</string>
+    <string name="date_format_ymd">yyyy-MM-dd</string>
 
 </resources>

@@ -29,6 +29,7 @@ import java.io.InputStream;
  * Decodes an SVG internal representation from an {@link InputStream}.
  */
 public final class SvgDecoder implements ResourceDecoder<InputStream, SVG> {
+    @Override
     public Resource<SVG> decode(InputStream source, int width, int height) throws IOException {
         try {
             SVG svg = SVG.getFromInputStream(source);

@@ -17,6 +17,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/content_padding_normal"
             android:layout_marginLeft="@dimen/content_padding_normal"
             android:layout_marginStart="@dimen/content_padding_normal"
             android:layout_marginTop="@dimen/content_padding_large"

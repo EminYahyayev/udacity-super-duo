@@ -4,7 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -32,13 +35,19 @@
             android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <activity
-            android:name="com.ewintory.alexandria.ui.activity.AboutActivity"
-            android:label="@string/title_about"
+            android:name="com.ewintory.alexandria.ui.activity.AddActivity"
+            android:label="@string/title_add_book"
             android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <activity
-            android:name="com.ewintory.alexandria.ui.activity.SettingsActivity"
-            android:label="@string/title_settings"
+            android:name=".camera.CaptureActivity"
+            android:label="@string/title_activity_capture"
+            android:parentActivityName="com.ewintory.alexandria.ui.activity.AddActivity"
+            android:screenOrientation="sensorLandscape" />
+
+        <activity
+            android:name="com.ewintory.alexandria.ui.activity.AboutActivity"
+            android:label="@string/title_about"
             android:parentActivityName="com.ewintory.alexandria.ui.activity.MainActivity" />
 
         <provider

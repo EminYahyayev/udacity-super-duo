@@ -32,4 +32,10 @@
     <dimen name="Score">30sp</dimen>
     <dimen name="League">15sp</dimen>
     <dimen name="score_item_crest_size">72dp</dimen>
+    <dimen name="widget_score_item_crest_size">56dp</dimen>
+
+    <dimen name="widget_scores_default_height">180dp</dimen>
+    <dimen name="widget_scores_default_width">250dp</dimen>
+    <dimen name="widget_scores_min_resize_width">@dimen/widget_scores_default_width</dimen>
+    <dimen name="widget_scores_min_resize_height">@dimen/widget_scores_default_height</dimen>
 </resources>
