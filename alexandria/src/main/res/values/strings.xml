@@ -7,6 +7,7 @@
     <string name="fab_recycler_view_behavior" translatable="false">com.ewintory.alexandria.ui.widget.ScrollAwareFABBehavior</string>
     <string name="pref_book_service_status_key" translatable="false">pref_book_service_status</string>
     <string name="isbn_13_prefix" translatable="false">978</string>
+    <string name="book_share_template" translatable="false">%1$s %2$s #Alexandria</string>
 
     <!-- Titles -->
     <string name="title_books">List of Books</string>
@@ -59,5 +60,7 @@
     <string name="error_no_scanner_app">No app installed to handle scan</string>
     <string name="message_book_removed">Book has been removed.</string>
     <string name="message_book_saved">Book has been saved.</string>
+    <string name="button_share">Share</string>
+    <string name="button_expand">Expand book details</string>
 
 </resources>

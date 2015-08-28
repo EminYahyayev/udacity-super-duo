@@ -134,7 +134,7 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/delete_button"
+                android:id="@+id/button_delete"
                 style="?attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

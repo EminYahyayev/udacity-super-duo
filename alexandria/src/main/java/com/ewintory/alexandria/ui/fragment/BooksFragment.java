@@ -1,6 +1,6 @@
 package com.ewintory.alexandria.ui.fragment;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -8,8 +8,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.ewintory.alexandria.R;
 import com.ewintory.alexandria.provider.AlexandriaContract;
+import com.ewintory.alexandria.service.BookService;
 import com.ewintory.alexandria.ui.adapter.BooksAdapter;
 
 import butterknife.Bind;
@@ -43,29 +44,9 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
     @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.app_bar) AppBarLayout mAppBarLayout;
 
-    private Listener mListener;
     private BooksAdapter mBooksAdapter;
-    private int mPosition = RecyclerView.NO_POSITION;
 
     public BooksFragment() { }
-
-    public interface Listener {
-        void onBookSelected(String ean);
-
-        Listener DUMMY = new Listener() {
-            @Override public void onBookSelected(String ean) { }
-        };
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        if (!(activity instanceof Listener)) {
-            throw new IllegalStateException(activity.getClass().getSimpleName() + " must implement BooksFragment.Listener.");
-        }
-
-        super.onAttach(activity);
-        mListener = (Listener) activity;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,7 +74,8 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
         mBooksAdapter = new BooksAdapter(this);
         mBooksAdapter.setListener(this);
 
-        mBooksRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mBooksRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(
+                getResources().getInteger(R.integer.book_columns), StaggeredGridLayoutManager.VERTICAL));
         mBooksRecyclerView.setAdapter(mBooksAdapter);
     }
 
@@ -137,23 +119,30 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
     }
 
     @Override
-    public void onDetach() {
-        mListener = Listener.DUMMY;
-        super.onDetach();
-    }
-
-    @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
         //The Refresh must be only active when the offset is zero :
         mSwipeRefreshLayout.setEnabled(i == 0);
     }
 
     @Override
-    public void onBookItemClicked(int position, View view) {
+    public void onBookItemDelete(int position) {
         Cursor cursor = mBooksAdapter.getCursor();
         if (cursor != null && cursor.moveToPosition(position)) {
-            mListener.onBookSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
+            Intent bookIntent = new Intent(getActivity(), BookService.class);
+            bookIntent.putExtra(BookService.EXTRA_EAN, cursor.getString(BooksAdapter.BooksQuery.ID));
+            bookIntent.setAction(BookService.ACTION_DELETE_BOOK);
+            getActivity().startService(bookIntent);
+            Toast.makeText(getActivity(), R.string.message_book_removed, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onBookItemShare(String shareText) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+        startActivity(shareIntent);
     }
 
     @Override
@@ -201,9 +190,6 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
 
         showEmptyView(size == 0);
         mBooksAdapter.swapCursor(cursor);
-        if (mPosition != RecyclerView.NO_POSITION) {
-            mBooksRecyclerView.smoothScrollToPosition(mPosition);
-        }
     }
 
     @Override

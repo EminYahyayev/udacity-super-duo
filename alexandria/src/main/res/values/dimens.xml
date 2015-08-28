@@ -34,8 +34,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <integer name="ean_size">13</integer>
     <integer name="ean_width">8</integer>
-    <dimen name="head_line">24sp</dimen>
-    <dimen name="small_fontsize">12sp</dimen>
+    <integer name="book_columns">1</integer>
 
     <dimen name="book_item_cover_size">112dp</dimen>
     <dimen name="add_book_cover_size">112dp</dimen>

@@ -20,6 +20,7 @@ package com.ewintory.alexandria.ui.adapter;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,17 +29,24 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ewintory.alexandria.R;
 import com.ewintory.alexandria.provider.AlexandriaContract;
+import com.ewintory.alexandria.utils.UiUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public final class BooksAdapter extends CursorAdapter<BooksAdapter.BookHolder> {
 
     public interface OnBookItemClickListener {
-        void onBookItemClicked(int position, View view);
+
+        void onBookItemDelete(int position);
+
+        void onBookItemShare(String shareText);
 
         OnBookItemClickListener DUMMY = new OnBookItemClickListener() {
-            @Override public void onBookItemClicked(int position, View view) { }
+            @Override public void onBookItemDelete(int position) {}
+
+            @Override public void onBookItemShare(String shareText) { }
         };
     }
 
@@ -47,13 +55,15 @@ public final class BooksAdapter extends CursorAdapter<BooksAdapter.BookHolder> {
                 AlexandriaContract.BookEntry._ID,
                 AlexandriaContract.BookEntry.TITLE,
                 AlexandriaContract.BookEntry.SUBTITLE,
-                AlexandriaContract.BookEntry.IMAGE_URL
+                AlexandriaContract.BookEntry.IMAGE_URL,
+                AlexandriaContract.BookEntry.DESC
         };
 
         int ID = 0;
         int TITLE = 1;
         int SUBTITLE = 2;
         int IMAGE_URL = 3;
+        int DESCRIPTION = 4;
     }
 
     private final Fragment mFragment;
@@ -78,7 +88,7 @@ public final class BooksAdapter extends CursorAdapter<BooksAdapter.BookHolder> {
 
     @Override
     public BookHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new BookHolder(mInflater.inflate(R.layout.item_book_v2, viewGroup, false));
+        return new BookHolder(mInflater.inflate(R.layout.item_book_v1, viewGroup, false));
     }
 
     @Override
@@ -97,21 +107,46 @@ public final class BooksAdapter extends CursorAdapter<BooksAdapter.BookHolder> {
 
         String bookSubTitle = mCursor.getString(BooksQuery.SUBTITLE);
         holder.bookSubTitle.setText(bookSubTitle);
+
+        String bookDescription = mCursor.getString(BooksQuery.DESCRIPTION);
+        holder.bookDescription.setText(bookDescription);
+        holder.expandButton.setVisibility(TextUtils.isEmpty(bookDescription) ? View.GONE : View.VISIBLE);
     }
 
     class BookHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.book_item_cover) ImageView bookCover;
         @Bind(R.id.book_item_title) TextView bookTitle;
         @Bind(R.id.book_item_subtitle) TextView bookSubTitle;
+        @Bind(R.id.book_item_description) TextView bookDescription;
+        @Bind(R.id.book_item_description_container) View bookDescriptionContainer;
+        @Bind(R.id.button_expand) View expandButton;
 
         public BookHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    mListener.onBookItemClicked(getAdapterPosition(), v);
+                    if (expandButton.getVisibility() == View.VISIBLE) onExpand(expandButton);
                 }
             });
+        }
+
+        @OnClick(R.id.button_expand) void onExpand(View button) {
+            button.setSelected(!button.isSelected());
+            if (button.isSelected()) {
+                UiUtils.expand(bookDescriptionContainer);
+            } else {
+                UiUtils.collapse(bookDescriptionContainer);
+            }
+        }
+
+        @OnClick(R.id.button_delete) void onDelete() {
+            mListener.onBookItemDelete(getAdapterPosition());
+        }
+
+        @OnClick(R.id.button_share) void onShare() {
+            mListener.onBookItemShare(mFragment.getString(R.string.book_share_template,
+                    bookTitle.getText(), bookSubTitle.getText()));
         }
     }
 }

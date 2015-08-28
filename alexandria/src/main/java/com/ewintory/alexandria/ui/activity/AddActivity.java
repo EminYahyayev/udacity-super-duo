@@ -147,7 +147,7 @@ public final class AddActivity extends BaseActivity implements LoaderManager.Loa
         showBookCard(false);
     }
 
-    @OnClick(R.id.delete_button)
+    @OnClick(R.id.button_delete)
     public void deleteBook() {
         Intent bookIntent = new Intent(this, BookService.class);
         bookIntent.putExtra(BookService.EXTRA_EAN, mEanView.getText().toString());

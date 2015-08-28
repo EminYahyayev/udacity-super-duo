@@ -17,6 +17,7 @@
 
 <resources>
 
-    <!--<dimen name="book_item_width">250dp</dimen>-->
+
+  <integer name="book_columns">2</integer>
 
 </resources>
