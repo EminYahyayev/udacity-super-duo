@@ -213,9 +213,9 @@ public final class AddActivity extends BaseActivity implements LoaderManager.Loa
         mBookSubtitleView.setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
+        String[] authorsArr = (authors != null) ? authors.split(",") : new String[0];
         mBookAuthorsView.setLines(authorsArr.length);
-        mBookAuthorsView.setText(authors.replace(",", "\n"));
+        mBookAuthorsView.setText((authors != null) ? authors.replace(",", "\n") : "");
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if (Patterns.WEB_URL.matcher(imgUrl).matches()) {

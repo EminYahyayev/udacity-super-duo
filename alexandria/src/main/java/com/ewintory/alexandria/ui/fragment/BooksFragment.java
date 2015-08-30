@@ -120,7 +120,6 @@ public final class BooksFragment extends BaseFragment implements LoaderManager.L
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-        //The Refresh must be only active when the offset is zero :
         mSwipeRefreshLayout.setEnabled(i == 0);
     }
 
